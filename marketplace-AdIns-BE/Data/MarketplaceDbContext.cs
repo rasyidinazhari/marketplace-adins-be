@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using marketplace_AdIns_BE.Models;
 namespace marketplace_AdIns_BE.Data
 {
