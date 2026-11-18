@@ -15,12 +15,12 @@ builder.Host.UseSerilog((ctx, config) =>
     config
     .ReadFrom.Configuration(ctx.Configuration)
     .WriteTo.Console()
-    .WriteTo.File("logs/cinebook-.txt",
+    .WriteTo.File("logs/marketplaceAdins-.txt",
     rollingInterval: RollingInterval.Day,
     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj} {NewLine} {Exception}");
 });
 
-var connStr = builder.Configuration.GetConnectionString("CineBook2");
+var connStr = builder.Configuration.GetConnectionString("MarketplaceAdIns");
 builder.Services.AddDbContext<MarketplaceDbContext>(opt => opt.UseNpgsql(connStr));
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
