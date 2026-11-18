@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "GbG14+t+2uOSs/WQBsQLky1zu/Kn8T5BUssyfQlbOFX554c3AFDKKZ/r54tAnToa6aGGPibsA4vdBafFMdXolw==",
+  "dgSpecHash": "KiFUT7frfLw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Adicipta\\Documents\\Dillwyn\\.Net\\marketplace-AdIns-BE\\marketplace-AdIns-BE\\marketplace-AdIns-BE.csproj",
+  "projectFilePath": "C:\\Users\\Adicipta\\Documents\\wisnu-trainee\\Project\\miniProject1\\backend\\marketplace-AdIns-BE\\marketplace-AdIns-BE.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Adicipta\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.36\\microsoft.aspnetcore.authentication.jwtbearer.6.0.36.nupkg.sha512",
     "C:\\Users\\Adicipta\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",

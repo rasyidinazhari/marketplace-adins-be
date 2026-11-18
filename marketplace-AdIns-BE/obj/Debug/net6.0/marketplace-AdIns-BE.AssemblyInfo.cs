@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("marketplace-AdIns-BE")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cc0cfec7495c1dfd35ac840908683463c21625e7")]
 [assembly: System.Reflection.AssemblyProductAttribute("marketplace-AdIns-BE")]
 [assembly: System.Reflection.AssemblyTitleAttribute("marketplace-AdIns-BE")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
