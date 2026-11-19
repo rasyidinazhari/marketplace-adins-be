@@ -25,6 +25,14 @@ namespace marketplace_AdIns_BE.Controllers
             return Ok(result);
         }
 
-        
+        /*[HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        {
+            RegisterResponse? result = await _authService.RegisAsync(request);
+            if (result == null)
+                return BadRequest(new { status = "error", message = "Email sudah terdaftar atau role tidak valid." });
+
+            return StatusCode(StatusCodes.Status201Created, result);
+        }*/
     }
 }

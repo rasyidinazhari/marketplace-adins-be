@@ -7,7 +7,7 @@ namespace marketplace_AdIns_BE.Controllers
     [Route("api/stores")]
     public class StoreController : ControllerBase
     {
-        private readonly IStoreService _storeService;
+       /* private readonly IStoreService _storeService;
 
         public StoreController(IStoreService storeService)
         {
@@ -54,7 +54,7 @@ namespace marketplace_AdIns_BE.Controllers
             if (result == false)
                 return Conflict(new { error = "Store ada transaksi yang sedang berjalan" });
             return NoContent();
-        }
+        }*/
 
     }
 }

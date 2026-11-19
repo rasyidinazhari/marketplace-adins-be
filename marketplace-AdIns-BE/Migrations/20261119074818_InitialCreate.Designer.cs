@@ -12,7 +12,7 @@ using marketplace_AdIns_BE.Data;
 namespace marketplace_AdIns_BE.Migrations
 {
     [DbContext(typeof(MarketplaceDbContext))]
-    [Migration("20261118101031_InitialCreate")]
+    [Migration("20261119074818_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,11 +75,20 @@ namespace marketplace_AdIns_BE.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
@@ -238,6 +247,9 @@ namespace marketplace_AdIns_BE.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool?>("isActive")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 

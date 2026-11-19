@@ -16,8 +16,12 @@ namespace marketplace_AdIns_BE.Models
         public long ProductId { get; set; }
         public Product? Product { get; set; }
 
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
+
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Quantity Minimal 1")]
         public int Quantity { get; set; }
+        public decimal TotalPrice { get; internal set; }
     }
 }
