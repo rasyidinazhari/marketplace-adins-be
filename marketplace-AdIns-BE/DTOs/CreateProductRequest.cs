@@ -4,22 +4,22 @@ namespace marketplace_AdIns_BE.DTOs
 {
     public class CreateProductRequest
     {
-        [Required(ErrorMessage = "StoreId harus terisi")]
+        [Range(1, long.MaxValue, ErrorMessage = "StoreId harus lebih dari 0")]
         public long StoreId { get; set; }
 
-        [Required(ErrorMessage = "CategoryId harus terisi")]
+        [Range(1, long.MaxValue, ErrorMessage = "CategoryId harus lebih dari 0")]
         public long CategoryId { get; set; }
 
         [Required(ErrorMessage = "ProductName harus terisi")]
         public string ProductName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "ProductDescription harus terisi")]
-        public string ProductDescription { get; set; } = string.Empty;
+        public string? ProductDescription { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "ProductPrice harus terisi")]
+        [Range(typeof(decimal), "0", "9999999999.99", ParseLimitsInInvariantCulture = true,
+            ErrorMessage = "ProductPrice tidak valid")]
         public decimal ProductPrice { get; set; }
 
-        [Required(ErrorMessage = "ProductStock harus terisi")]
+        [Range(0, int.MaxValue, ErrorMessage = "ProductStock tidak boleh negatif")]
         public int ProductStock { get; set; }
     }
 }
