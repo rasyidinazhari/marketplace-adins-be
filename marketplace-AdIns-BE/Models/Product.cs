@@ -26,6 +26,8 @@ namespace marketplace_AdIns_BE.Models
         [Range(0, int.MaxValue, ErrorMessage = "Stok Minimal 0")]
         public int? ProductStock { get; set; } = 0;
 
+        public bool? isActive { get; set; } = true;
+
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
 
