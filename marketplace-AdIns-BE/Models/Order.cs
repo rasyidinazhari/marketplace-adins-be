@@ -26,14 +26,14 @@ namespace marketplace_AdIns_BE.Models
         public Voucher? Voucher { get; set; }
 
         [Column(TypeName = "decimal(12,2)")]
-        public int? DiscountAmount { get; set; } = 0;
+        public decimal? DiscountAmount { get; set; } = 0;
 
         [Required]
         [Column(TypeName = "decimal(12,2)")]
-        public int TotalBeforeDisc { get; set; }
+        public decimal TotalBeforeDisc { get; set; }
 
         [Column(TypeName = "decimal(12,2)")]
-        public int? TotalAfterDisc { get; set; }
+        public decimal? TotalAfterDisc { get; set; }
 
         public OrderStatus Status { get; set; } = OrderStatus.PENDING_PAYMENT;
 
