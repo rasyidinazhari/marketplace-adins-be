@@ -8,6 +8,8 @@ namespace marketplace_AdIns_BE.DTOs
         public string Email { get; set; } = string.Empty;
         [Required]
         public string Password { get; set; } = string.Empty;
+        [Required]
+        public string Role { get; set; } = string.Empty;
     }
     
 }

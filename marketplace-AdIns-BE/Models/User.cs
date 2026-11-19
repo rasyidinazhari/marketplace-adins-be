@@ -23,7 +23,7 @@ namespace marketplace_AdIns_BE.Models
         public DateTime Created_at { get; set; } = DateTime.Now;
         public DateTime Updated_at { get; set; } = DateTime.Now;
 
-        public Store? Store { get; set; }
+        public Store? Store { get; set; } = null ;
         public ICollection<Order> Orders { get; set; } = new List<Order>();
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
         public ICollection<Address> Addresses { get; set; } = new List<Address>();

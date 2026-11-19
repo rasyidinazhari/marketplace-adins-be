@@ -87,6 +87,7 @@ namespace marketplace_AdIns_BE.Migrations
                     ProductDescription = table.Column<string>(type: "text", nullable: true),
                     ProductPrice = table.Column<decimal>(type: "numeric(12,2)", nullable: true),
                     ProductStock = table.Column<int>(type: "integer", nullable: true),
+                    isActive = table.Column<bool>(type: "boolean", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },

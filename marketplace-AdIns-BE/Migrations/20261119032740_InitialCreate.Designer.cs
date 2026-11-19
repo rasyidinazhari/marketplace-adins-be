@@ -12,7 +12,7 @@ using marketplace_AdIns_BE.Data;
 namespace marketplace_AdIns_BE.Migrations
 {
     [DbContext(typeof(MarketplaceDbContext))]
-    [Migration("20261118101031_InitialCreate")]
+    [Migration("20261119032740_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -238,6 +238,9 @@ namespace marketplace_AdIns_BE.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool?>("isActive")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
