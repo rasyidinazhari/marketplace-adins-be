@@ -33,7 +33,7 @@ namespace marketplace_AdIns_BE.Controllers
             return Ok(product);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Seller")]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequest request)
         {
@@ -48,7 +48,7 @@ namespace marketplace_AdIns_BE.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Seller")]
         [HttpPut("{id:long}")]
         public async Task<IActionResult> UpdateProduct(long id, [FromBody] CreateProductRequest request)
         {
