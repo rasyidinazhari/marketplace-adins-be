@@ -20,7 +20,34 @@ namespace marketplace_AdIns_BE.Services
 
         public async Task<OrderItemResponse?> CreateAsync(OrderItemRequest request)
         {
-            throw new NotImplementedException();
+            await _orderItemRepository.BeginTransactionAsync();
+
+            try
+            {
+                OrderItem orderItem = new()
+                {
+                    OrderId = request.OrderId,
+                    ProductId = request.ProductId,
+                    PriceAtPurchase = request.PriceAtPurchase,
+                    Quantity = request.Quantity,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                };
+
+                await _orderItemRepository.AddAsync(orderItem);
+
+                await _orderItemRepository.SaveChangesAsync();
+                await _orderItemRepository.CommitTransactionAsync();
+
+                /*                _logger.LogInformation($"Product berhasil dibuat: Product {product.Id}, Store {product.StoreId}, Product {product.ProductName}");
+                */
+                var created = await GetByIdAsync(orderItem.Id);
+                return created != null ? ToOrderItemResponse(created) : null;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<bool> DeleteAsync(long orderItemId)
@@ -28,9 +55,15 @@ namespace marketplace_AdIns_BE.Services
             throw new NotImplementedException();
         }
 
-        public async Task<List<Cart>> GetAllAsync(long buyerId)
+        public async Task<List<OrderItem>> GetAllAsync(long orderId)
         {
-            throw new NotImplementedException();
+            var orders = await _orderItemRepository.GetAllAsync("Order", "Product");
+
+            orders = orders.Where(oi => oi.OrderId == orderId).ToList();
+
+            if (!orders.Any()) return null;
+
+            return orders;
         }
 
         public async Task<OrderItem?> GetByIdAsync(long orderItemId)
@@ -45,7 +78,15 @@ namespace marketplace_AdIns_BE.Services
 
         public OrderItemResponse ToOrderItemResponse(OrderItem orderItem)
         {
-            throw new NotImplementedException();
+            return new OrderItemResponse
+            {
+                Id = orderItem.Id,
+                OrderId = orderItem.OrderId,
+                ProductId = orderItem.ProductId,
+                ProductName = orderItem?.Product?.ProductName ?? string.Empty,
+                UpdatedAt = orderItem?.UpdatedAt ?? DateTime.Now,
+                CreatedAt = orderItem?.CreatedAt ?? DateTime.Now,
+            };
         }
     }
 }

@@ -6,7 +6,7 @@ namespace marketplace_AdIns_BE.Services
     public interface IOrderItemService
     {
         Task<OrderItem?> GetByIdAsync(long orderItemId);
-        Task<List<Cart>> GetAllAsync(long buyerId);
+        Task<List<OrderItem>> GetAllAsync(long orderId);
         Task<OrderItemResponse?> CreateAsync(OrderItemRequest request);
         Task<OrderItemResponse?> UpdateAsync(long orderItemId, OrderItemRequest request);
         Task<bool> DeleteAsync(long orderItemId);
