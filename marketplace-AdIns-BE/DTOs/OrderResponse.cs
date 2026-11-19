@@ -1,4 +1,6 @@
-﻿namespace marketplace_AdIns_BE.DTOs
+﻿using marketplace_AdIns_BE.Models;
+
+namespace marketplace_AdIns_BE.DTOs
 {
     public class OrderResponse
     {
@@ -14,6 +16,7 @@
         public decimal? DiscountAmount { get; set; } = 0;
         public decimal? TotalBeforeDisc { get; set; } = 0;
         public decimal? TotalAfterDisc { get; set; } = 0;
+        public OrderStatus? OrderStatus { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }

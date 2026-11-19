@@ -12,7 +12,7 @@ using marketplace_AdIns_BE.Data;
 namespace marketplace_AdIns_BE.Migrations
 {
     [DbContext(typeof(MarketplaceDbContext))]
-    [Migration("20261119095446_InitialCreate")]
+    [Migration("20261119120914_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

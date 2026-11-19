@@ -12,6 +12,7 @@ namespace marketplace_AdIns_BE.DTOs
         public decimal? DiscountAmount { get; set; } = 0;
         public decimal? TotalBeforeDisc { get; set; } = 0;
         public decimal? TotalAfterDisc { get; set; } = 0;
+        public OrderStatus? OrderStatus { get; set; }
 
     }
 }

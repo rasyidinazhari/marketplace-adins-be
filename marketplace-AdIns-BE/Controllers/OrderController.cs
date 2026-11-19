@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using marketplace_AdIns_BE.DTOs;
 using marketplace_AdIns_BE.Services;
+using marketplace_AdIns_BE.Models;
 
 namespace marketplace_AdIns_BE.Controllers
 {
@@ -10,14 +11,14 @@ namespace marketplace_AdIns_BE.Controllers
     [Route("api/orders")]
     public class OrderController : ControllerBase
     {
-       /* private readonly IOrderService _orderService;
+        private readonly IOrderService _orderService;
 
         public OrderController(IOrderService orderService)
         {
             _orderService = orderService;
         }
 
-        [Authorize(Roles = "Buyer")]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] OrderRequest request)
         {
@@ -32,24 +33,38 @@ namespace marketplace_AdIns_BE.Controllers
             return Created($"api/orders/{result.Id}", result);
         }
 
-        *//*[Authorize(Roles = "Buyer")]*//*
+        [Authorize]
         [HttpGet()]
         public async Task<IActionResult> GetAllOrders()
         {
-            var userIdClaim = User.FindFirst("userId")?.Value;
-
-            if (!long.TryParse(userIdClaim, out long userId))
+            try
             {
-                return Unauthorized("Invalid or missing user ID claim.");
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                string? role = User.FindFirst("role")?.Value;
+
+                if (!long.TryParse(userIdClaim, out long userId))
+                {
+                    return Unauthorized("Invalid or missing user ID claim.");
+                }
+
+                List<Order> orders = null;
+                if (role == "Buyer")
+                {
+                    orders = await _orderService.GetAllOrderForBuyerAsync(userId);
+                } else if (role == "Seller")
+                {
+                    orders = await _orderService.GetAllOrderForSellerAsync(userId);
+                }
+
+                return Ok(orders);
+
+            } catch (Exception Ex)
+            {
+                throw;
             }
-
-            var role = 
-
-            var orders = await _orderService.GetPurchasesAsync(userId);
-            return Ok(orders);
         }
 
-        [Authorize(Roles = "Seller")]
+        /*[Authorize]
         [HttpGet("sales")]
         public async Task<IActionResult> GetSalesOrders()
         {
@@ -62,39 +77,39 @@ namespace marketplace_AdIns_BE.Controllers
 
             var orders = await _orderService.GetSalesAsync(userId);
             return Ok(orders);
-        }
-
-        [Authorize(Roles = "Buyer,Seller")]
-        [HttpGet("{id:long}")]
-        public async Task<IActionResult> GetOrder(long id)
-        {
-            var userIdClaim = User.FindFirst("userId")?.Value;
-
-            if (!long.TryParse(userIdClaim, out long userId))
-            {
-                return Unauthorized("Invalid or missing user ID claim.");
-            }
-
-            var order = await _orderService.GetByIdAsync(userId, id);
-            if (order == null) return NotFound();
-            return Ok(order);
-        }
-
-        [Authorize(Roles = "Buyer,Seller")]
-        [HttpPatch("{id:long}/status")]
-        public async Task<IActionResult> UpdateOrderStatus(
-            long id, [FromBody] UpdateOrderStatusRequest request)
-        {
-            var userIdClaim = User.FindFirst("userId")?.Value;
-
-            if (!long.TryParse(userIdClaim, out long userId))
-            {
-                return Unauthorized("Invalid or missing user ID claim.");
-            }
-
-            var order = await _orderService.UpdateStatusAsync(userId, id, request.Status);
-            if (order == null) return NotFound();
-            return Ok(order);
         }*/
+
+        [Authorize]
+        [HttpGet("{orderId:long}")]
+        public async Task<IActionResult> GetOrder(long orderId)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+
+            if (!long.TryParse(userIdClaim, out long userId))
+            {
+                return Unauthorized("Invalid or missing user ID claim.");
+            }
+
+            var order = await _orderService.GetByIdAsync(orderId);
+            if (order == null) return NotFound();
+            return Ok(order);
+        }
+
+        [Authorize]
+        [HttpPatch("{orderId:long}")]
+        public async Task<IActionResult> UpdateOrderStatus(
+            long orderId, [FromBody] OrderRequest request)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+
+            if (!long.TryParse(userIdClaim, out long userId))
+            {
+                return Unauthorized("Invalid or missing user ID claim.");
+            }
+
+            var order = await _orderService.UpdateAsync(orderId, request);
+            if (order == null) return NotFound();
+            return Ok(order);
+        }
     }
 }

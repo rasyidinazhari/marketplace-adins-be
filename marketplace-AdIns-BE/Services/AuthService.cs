@@ -22,14 +22,15 @@ namespace marketplace_AdIns_BE.Services
         public async Task<LoginResponse?> LoginAsync(LoginRequest loginRequest)
         {
             List<User> users = await _userRepository.GetAllAsync("UserRoles.Role", "Addresses", "Stores");
-            User user = users.FirstOrDefault(u => u.Email == loginRequest.Email);
 
-            if (user == null || user.Password != loginRequest.Password) return null;
+            User? user = users.FirstOrDefault(u =>
+                u.Email == loginRequest.Email &&
+                u.UserRoles.Any(ur => ur.Role != null && ur.Role.RoleName == loginRequest.Role)
+            );
 
-            bool hasMatchingRole = user.UserRoles.Any(ur => ur.Role != null && ur.Role.RoleName == loginRequest.Role);
+            if (user == null) return null;
 
-            // Jika role tidak cocok, tolak login
-            if (!hasMatchingRole) return null;
+            if (user.Password != loginRequest.Password) return null;
 
             //Create Payload
             Claim[] claims = new Claim[]
