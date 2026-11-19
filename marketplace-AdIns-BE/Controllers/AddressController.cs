@@ -18,7 +18,7 @@ namespace marketplace_AdIns_BE.Controllers
         public async Task<IActionResult> GetAddrress(long id)
         {
             var addresses = await ) _addressService.GetByIdAsync(id);
-            if (addresses == null) return NotFound();
+            if (addresses == null) returdn NotFound();
             return Ok(addresses);
         }
 
