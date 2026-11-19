@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using marketplace_AdIns_BE.DTOs;
+using marketplace_AdIns_BE.Services;
 
 namespace marketplace_AdIns_BE.Controllers
 {
@@ -9,7 +10,7 @@ namespace marketplace_AdIns_BE.Controllers
     [Route("api/orders")]
     public class OrderController : ControllerBase
     {
-        private readonly IOrderService _orderService;
+       /* private readonly IOrderService _orderService;
 
         public OrderController(IOrderService orderService)
         {
@@ -18,7 +19,7 @@ namespace marketplace_AdIns_BE.Controllers
 
         [Authorize(Roles = "Buyer")]
         [HttpPost]
-        public async Task<IActionResult> CreateOrder([FromBody] CheckoutRequest request)
+        public async Task<IActionResult> CreateOrder([FromBody] OrderRequest request)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
 
@@ -27,13 +28,13 @@ namespace marketplace_AdIns_BE.Controllers
                 return Unauthorized("Invalid or missing user ID claim.");
             }
 
-            OrderDetailResponse? result = await _orderService.CreateAsync(userId, request);
+            var result = await _orderService.CreateAsync(request);
             return Created($"api/orders/{result.Id}", result);
         }
 
-        [Authorize(Roles = "Buyer")]
-        [HttpGet("purchases")]
-        public async Task<IActionResult> GetMyOrders()
+        *//*[Authorize(Roles = "Buyer")]*//*
+        [HttpGet()]
+        public async Task<IActionResult> GetAllOrders()
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
 
@@ -41,6 +42,8 @@ namespace marketplace_AdIns_BE.Controllers
             {
                 return Unauthorized("Invalid or missing user ID claim.");
             }
+
+            var role = 
 
             var orders = await _orderService.GetPurchasesAsync(userId);
             return Ok(orders);
@@ -92,6 +95,6 @@ namespace marketplace_AdIns_BE.Controllers
             var order = await _orderService.UpdateStatusAsync(userId, id, request.Status);
             if (order == null) return NotFound();
             return Ok(order);
-        }
+        }*/
     }
 }

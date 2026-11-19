@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using marketplace_AdIns_BE.Services;
 
 namespace marketplace_AdIns_BE.Controllers
 {
@@ -7,7 +8,7 @@ namespace marketplace_AdIns_BE.Controllers
     [Route("api/vouchers")]
     public class VoucherController : ControllerBase
     {
-        private readonly IVoucherService _voucherService;
+        /*private readonly IVoucherService _voucherService;
 
         public VoucherController(IVoucherService voucherService)
         {
@@ -20,6 +21,6 @@ namespace marketplace_AdIns_BE.Controllers
         {
             var vouchers = await _voucherService.GetAllAsync();
             return Ok(vouchers);
-        }
+        }*/
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using marketplace_AdIns_BE.DTOs;
+using marketplace_AdIns_BE.Services;
 
 namespace marketplace_AdIns_BE.Controllers
 {
@@ -8,7 +9,7 @@ namespace marketplace_AdIns_BE.Controllers
     [Route("api/products/{productId:long}/reviews")]
     public class ReviewController : ControllerBase
     {
-        private readonly IReviewService _reviewService;
+        /*private readonly IReviewService _reviewService;
 
         public ReviewController(IReviewService reviewService)
         {
@@ -43,6 +44,6 @@ namespace marketplace_AdIns_BE.Controllers
             {
                 return BadRequest(new { status = "error", message = ex.Message });
             }
-        }
+        }*/
     }
 }

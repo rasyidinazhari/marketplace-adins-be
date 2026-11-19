@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using marketplace_AdIns_BE.DTOs;
+using marketplace_AdIns_BE.Services;
 
 namespace marketplace_AdIns_BE.Controllers
 {
@@ -16,7 +17,7 @@ namespace marketplace_AdIns_BE.Controllers
             _cartService = cartService;
         }
 
-        [HttpGet]
+        /*[HttpGet]
         public async Task<IActionResult> GetCart()
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
@@ -73,6 +74,6 @@ namespace marketplace_AdIns_BE.Controllers
             bool removed = await _cartService.DeleteAsync(userId, productId);
             if (!removed) return NotFound();
             return NoContent();
-        }
+        }*/
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using marketplace_AdIns_BE.DTOs;
+using marketplace_AdIns_BE.Services;
 
 namespace marketplace_AdIns_BE.Controllers
 {
@@ -8,7 +9,7 @@ namespace marketplace_AdIns_BE.Controllers
     [Route("api/products")]
     public class ProductController : ControllerBase
     {
-        private readonly IProductService _productService;
+        /*private readonly IProductService _productService;
 
         public ProductController(IProductService productService)
         {
@@ -55,6 +56,6 @@ namespace marketplace_AdIns_BE.Controllers
             var result = await _productService.UpdateAsync(id, request);
             if (result == null) return NotFound();
             return Ok(result);
-        }
+        }*/
      }
 }
