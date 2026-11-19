@@ -27,7 +27,13 @@ namespace marketplace_AdIns_BE.Controllers
         public async Task<IActionResult> CreateReview(
             long productId, [FromBody] CreateReviewRequest request)
         {
-            long userId = long.Parse(User.FindFirst("userId")!.Value);
+            var userIdClaim = User.FindFirst("userId")?.Value;
+
+            if (!long.TryParse(userIdClaim, out long userId))
+            {
+                return Unauthorized("Invalid or missing user ID claim.");
+            }
+
             try
             {
                 ReviewDetailResponse? result = await _reviewService.CreateAsync(userId, productId, request);
