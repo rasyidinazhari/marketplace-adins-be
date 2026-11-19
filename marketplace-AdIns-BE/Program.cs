@@ -27,12 +27,12 @@ builder.Services.AddDbContext<MarketplaceDbContext>(opt => opt.UseNpgsql(connStr
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 // Add services to the container.
-/*builder.Services.AddScoped<IMovieService, MovieService>();
-builder.Services.AddScoped<IScheduleService, ScheduleService>();
-builder.Services.AddScoped<ISeatService, SeatService>();
-builder.Services.AddScoped<ITheaterService, TheaterService>();
-builder.Services.AddScoped<IBookingService, BookingService>();
-builder.Services.AddScoped<IAuthService, AuthService>();*/
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderItemService, OrderItemService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

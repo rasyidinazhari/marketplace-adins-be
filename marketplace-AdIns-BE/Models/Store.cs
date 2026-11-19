@@ -9,7 +9,7 @@ namespace marketplace_AdIns_BE.Models
         public long Id { get; set; }
 
         [ForeignKey(nameof(User))]
-        public int UserId { get; set; }
+        public long UserId { get; set; }
         public User? User { get; set; }
 
         [Required]

@@ -26,10 +26,6 @@ namespace marketplace_AdIns_BE.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email)
-                .IsUnique();
-
             modelBuilder.Entity<Role>()
                 .HasIndex(u => u.RoleName)
                 .IsUnique();
@@ -127,12 +123,18 @@ namespace marketplace_AdIns_BE.Data
                 .HasForeignKey(b => b.VoucherId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Relasi One to One
+            modelBuilder.Entity<Store>()
+                .HasOne(b => b.User)
+                .WithMany(u => u.Stores)
+                .HasForeignKey(b => b.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            /*// Relasi One to One
             modelBuilder.Entity<User>()
                 .HasOne(b => b.Store)
                 .WithOne(u => u.User)
                 .HasForeignKey<User>(b => b.Id)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict);*/
 
 
             // Relasi many-to-many lewat pivot UserRole

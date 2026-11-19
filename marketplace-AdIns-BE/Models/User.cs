@@ -29,7 +29,7 @@ namespace marketplace_AdIns_BE.Models
         public ICollection<Address> Addresses { get; set; } = new List<Address>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<Cart> Carts { get; set; } = new List<Cart>();
-
+        public ICollection<Store> Stores { get; set; } = new List<Store>();
 
     }
 }

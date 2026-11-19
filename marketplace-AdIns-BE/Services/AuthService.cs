@@ -21,7 +21,7 @@ namespace marketplace_AdIns_BE.Services
 
         public async Task<LoginResponse?> LoginAsync(LoginRequest loginRequest)
         {
-            List<User> users = await _userRepository.GetAllAsync("UserRole.Role", "Address", "Store");
+            List<User> users = await _userRepository.GetAllAsync("UserRoles.Role", "Addresses", "Stores");
             User user = users.FirstOrDefault(u => u.Email == loginRequest.Email);
 
             if (user == null || user.Password != loginRequest.Password) return null;

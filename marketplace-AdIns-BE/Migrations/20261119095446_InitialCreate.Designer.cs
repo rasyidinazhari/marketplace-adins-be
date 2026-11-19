@@ -12,7 +12,7 @@ using marketplace_AdIns_BE.Data;
 namespace marketplace_AdIns_BE.Migrations
 {
     [DbContext(typeof(MarketplaceDbContext))]
-    [Migration("20261119074818_InitialCreate")]
+    [Migration("20261119095446_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -336,12 +336,20 @@ namespace marketplace_AdIns_BE.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("UserId1")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("StoreName")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1")
                         .IsUnique();
 
                     b.ToTable("Stores");
@@ -350,7 +358,10 @@ namespace marketplace_AdIns_BE.Migrations
             modelBuilder.Entity("marketplace_AdIns_BE.Models.User", b =>
                 {
                     b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("timestamp with time zone");
@@ -377,9 +388,6 @@ namespace marketplace_AdIns_BE.Migrations
                         .HasColumnType("boolean");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -572,15 +580,19 @@ namespace marketplace_AdIns_BE.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("marketplace_AdIns_BE.Models.User", b =>
+            modelBuilder.Entity("marketplace_AdIns_BE.Models.Store", b =>
                 {
-                    b.HasOne("marketplace_AdIns_BE.Models.Store", "Store")
-                        .WithOne("User")
-                        .HasForeignKey("marketplace_AdIns_BE.Models.User", "Id")
+                    b.HasOne("marketplace_AdIns_BE.Models.User", "User")
+                        .WithMany("Stores")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Store");
+                    b.HasOne("marketplace_AdIns_BE.Models.User", null)
+                        .WithOne("Store")
+                        .HasForeignKey("marketplace_AdIns_BE.Models.Store", "UserId1");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("marketplace_AdIns_BE.Models.UserRole", b =>
@@ -631,8 +643,6 @@ namespace marketplace_AdIns_BE.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("Products");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("marketplace_AdIns_BE.Models.User", b =>
@@ -644,6 +654,10 @@ namespace marketplace_AdIns_BE.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("Store");
+
+                    b.Navigation("Stores");
 
                     b.Navigation("UserRoles");
                 });
