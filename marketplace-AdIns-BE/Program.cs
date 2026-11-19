@@ -10,7 +10,8 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog((ctx, config) =>
+//Use Logger
+/*builder.Host.UseSerilog((ctx, config) =>
 {
     config
     .ReadFrom.Configuration(ctx.Configuration)
@@ -18,7 +19,7 @@ builder.Host.UseSerilog((ctx, config) =>
     .WriteTo.File("logs/marketplaceAdins-.txt",
     rollingInterval: RollingInterval.Day,
     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj} {NewLine} {Exception}");
-});
+});*/
 
 var connStr = builder.Configuration.GetConnectionString("MarketplaceAdIns");
 builder.Services.AddDbContext<MarketplaceDbContext>(opt => opt.UseNpgsql(connStr));
