@@ -290,11 +290,17 @@ namespace marketplace_AdIns_BE.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<DateTime?>("Created_at")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Rating")
                         .HasColumnType("numeric(2,1)");
+
+                    b.Property<DateTime?>("Updated_at")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
