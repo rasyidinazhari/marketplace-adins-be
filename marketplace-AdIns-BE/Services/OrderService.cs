@@ -128,8 +128,8 @@ namespace marketplace_AdIns_BE.Services
                 TotalBeforeDisc = order.TotalBeforeDisc,
                 VoucherId = order.VoucherId,
                 VoucherCode = order?.Voucher?.Code ?? string.Empty,
-                UpdatedAt = order?.UpdatedAt ?? DateTime.Now,
-                CreatedAt = order?.CreatedAt ?? DateTime.Now,
+                UpdatedAt = order?.UpdatedAt ?? DateTime.UtcNow,
+                CreatedAt = order?.CreatedAt ?? DateTime.UtcNow,
             };
         }
     }

@@ -24,8 +24,8 @@ namespace marketplace_AdIns_BE.Models
 
         public bool? isActive { get; set; } = true;
 
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
-        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<Cart> Carts { get; set; } = new List<Cart>();

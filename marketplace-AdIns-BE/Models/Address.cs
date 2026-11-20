@@ -25,8 +25,8 @@ namespace marketplace_AdIns_BE.Models
 
         public string? Note { get; set; } = string.Empty;
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now ;
-        public DateTime UpdatedAt { get; set; } = DateTime.Now ;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public ICollection<Order> Orders { get; set; } = new List<Order>();
 
 

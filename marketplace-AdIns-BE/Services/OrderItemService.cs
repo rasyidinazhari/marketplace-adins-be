@@ -30,8 +30,8 @@ namespace marketplace_AdIns_BE.Services
                     ProductId = request.ProductId,
                     PriceAtPurchase = request.PriceAtPurchase,
                     Quantity = request.Quantity,
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
                 };
 
                 await _orderItemRepository.AddAsync(orderItem);
@@ -84,8 +84,8 @@ namespace marketplace_AdIns_BE.Services
                 OrderId = orderItem.OrderId,
                 ProductId = orderItem.ProductId,
                 ProductName = orderItem?.Product?.ProductName ?? string.Empty,
-                UpdatedAt = orderItem?.UpdatedAt ?? DateTime.Now,
-                CreatedAt = orderItem?.CreatedAt ?? DateTime.Now,
+                UpdatedAt = orderItem?.UpdatedAt ?? DateTime.UtcNow,
+                CreatedAt = orderItem?.CreatedAt ?? DateTime.UtcNow,
             };
         }
     }
