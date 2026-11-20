@@ -75,7 +75,6 @@ namespace marketplace_AdIns_BE.Services
 
         public async Task<List<Product>?> GetAllAsync(string? search, long? sellerId, long? categoryId, int page, int limit)
         {
-            // 1. WAJIB Include "ProductCategories" agar bisa difilter berdasarkan kategori
             var products = await _productRepository.GetAllAsync("Store", "ProductCategories");
 
             // For Seller
@@ -89,7 +88,7 @@ namespace marketplace_AdIns_BE.Services
                     products = products.Where(p => p.ProductName != null && p.ProductName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
                 }
 
-                // Filter by Category (Jika categoryId dikirim dan bukan 0)
+                // Filter by Category 
                 if (categoryId.HasValue && categoryId.Value != 0)
                 {
                     // Gunakan .Any() untuk mengecek apakah ada kategori yang cocok di dalam list
@@ -113,11 +112,9 @@ namespace marketplace_AdIns_BE.Services
                 }
             }
 
-            // 2. Jangan return null jika kosong, kembalikan list kosong saja
-            // agar Frontend tidak error (NullReferenceException)
+            
             if (!products.Any()) return new List<Product>();
 
-            // 3. Pagination
             return products.Skip((page - 1) * limit).Take(limit).ToList();
         }
 
