@@ -11,9 +11,9 @@ namespace marketplace_AdIns_BE.DTOs
         public string? ProductName { get; set; }
         public long Rating { get; set; }
 
-        public string? comment { get; set; }
+        public string? Comment { get; set; }
 
-        public DateTime? Created_at { get; set; }
-        public DateTime? Updated_at { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }
