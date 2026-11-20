@@ -9,7 +9,7 @@ namespace marketplace_AdIns_BE.Controllers
     [Route("api/products/{productId:long}/reviews")]
     public class ReviewController : ControllerBase
     {
-        /*private readonly IReviewService _reviewService;
+        private readonly IReviewService _reviewService;
 
         public ReviewController(IReviewService reviewService)
         {
@@ -17,16 +17,16 @@ namespace marketplace_AdIns_BE.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetReviews(long productId)
+        public async Task<IActionResult> GetAllReviewsByProductId(long productId)
         {
-            var reviews = await _reviewService.GetByProductAsync(productId);
+            var reviews = await _reviewService.GetAllReviewByProductIdAsync(productId);
             return Ok(reviews);
         }
 
-        [Authorize(Roles = "Buyer")]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateReview(
-            long productId, [FromBody] CreateReviewRequest request)
+            long productId, [FromBody] ReviewRequest request)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
 
@@ -37,13 +37,13 @@ namespace marketplace_AdIns_BE.Controllers
 
             try
             {
-                ReviewDetailResponse? result = await _reviewService.CreateAsync(userId, productId, request);
+                ReviewResponse? result = await _reviewService.CreateAsync(request);
                 return Created($"/api/{productId}/reviews/{result.Id}", result);
             }
             catch (Exception ex)
             {
                 return BadRequest(new { status = "error", message = ex.Message });
             }
-        }*/
+        }
     }
 }
