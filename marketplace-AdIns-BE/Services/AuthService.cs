@@ -38,7 +38,7 @@ namespace marketplace_AdIns_BE.Services
                 new Claim("userId", user.Id.ToString()),
                 new Claim("email", user.Email),
                 new Claim("name", user.Name),
-                new Claim("role", loginRequest.Role)
+                new Claim(ClaimTypes.Role, loginRequest.Role)
             };
 
             //Set Credetial

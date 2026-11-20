@@ -42,8 +42,8 @@ namespace marketplace_AdIns_BE.Services
                     TotalBeforeDisc = request.TotalBeforeDisc ?? 0,
                     TotalAfterDisc = request.TotalAfterDisc ?? 0,
                     Status = OrderStatus.PENDING_PAYMENT,
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
                 };
 
                 await _orderRepository.AddAsync(order);
@@ -93,7 +93,7 @@ namespace marketplace_AdIns_BE.Services
         {
             var orders = await _orderRepository.GetAllAsync("User", "Store", "Voucher", "Address");
 
-            orders = orders.Where(o => o.Store.UserId == buyerId).ToList();
+            orders = orders.Where(o => o.UserId == buyerId).ToList();
 
             if (!orders.Any()) return null;
 

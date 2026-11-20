@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using marketplace_AdIns_BE.DTOs;
 using marketplace_AdIns_BE.Services;
 using marketplace_AdIns_BE.Models;
+using System.Security.Claims;
 
 namespace marketplace_AdIns_BE.Controllers
 {
@@ -40,7 +41,7 @@ namespace marketplace_AdIns_BE.Controllers
             try
             {
                 var userIdClaim = User.FindFirst("userId")?.Value;
-                string? role = User.FindFirst("role")?.Value;
+                string? role = User.FindFirst(ClaimTypes.Role)?.Value;
 
                 if (!long.TryParse(userIdClaim, out long userId))
                 {
