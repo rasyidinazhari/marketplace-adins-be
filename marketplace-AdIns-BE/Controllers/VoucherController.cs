@@ -8,19 +8,19 @@ namespace marketplace_AdIns_BE.Controllers
     [Route("api/vouchers")]
     public class VoucherController : ControllerBase
     {
-        /*private readonly IVoucherService _voucherService;
+        private readonly IVoucherService _voucherService;
 
         public VoucherController(IVoucherService voucherService)
         {
             _voucherService = voucherService;
         }
 
-        [Authorize(Roles = "Buyer")]
+        [Authorize(Roles = "Buyer,Seller")]
         [HttpGet]
         public async Task<IActionResult> GetVouchers()
         {
             var vouchers = await _voucherService.GetAllAsync();
             return Ok(vouchers);
-        }*/
+        }
     }
 }
