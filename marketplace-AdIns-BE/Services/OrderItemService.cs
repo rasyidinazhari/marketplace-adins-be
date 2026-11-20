@@ -1,77 +1,65 @@
-﻿using marketplace_AdIns_BE.Models;
+﻿using marketplace_AdIns_BE.DTOs;
+using marketplace_AdIns_BE.Models;
 using marketplace_AdIns_BE.Repositories;
-using marketplace_AdIns_BE.DTOs;
-/*using marketplace_AdIns_BE.Exceptions;
-*/
+
 namespace marketplace_AdIns_BE.Services
 {
     public class OrderItemService : IOrderItemService
     {
         private readonly IRepository<OrderItem> _orderItemRepository;
-        private readonly ILogger<OrderItemService> _logger;
 
-        public OrderItemService(
-            IRepository<OrderItem> orderItemRepository,
-            ILogger<OrderItemService> logger)
+        public OrderItemService(IRepository<OrderItem> orderItemRepository)
         {
             _orderItemRepository = orderItemRepository;
-            _logger = logger;
         }
 
         public async Task<OrderItemResponse?> CreateAsync(OrderItemRequest request)
         {
             await _orderItemRepository.BeginTransactionAsync();
-
             try
             {
-                OrderItem orderItem = new()
+                var now = DateTime.UtcNow;
+                var item = new OrderItem
                 {
                     OrderId = request.OrderId,
                     ProductId = request.ProductId,
                     PriceAtPurchase = request.PriceAtPurchase,
                     Quantity = request.Quantity,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
+                    CreatedAt = now,
+                    UpdatedAt = now
                 };
-
-                await _orderItemRepository.AddAsync(orderItem);
-
+                await _orderItemRepository.AddAsync(item);
                 await _orderItemRepository.SaveChangesAsync();
+                var saved = await GetByIdAsync(item.Id)
+                    ?? throw new InvalidOperationException("Item pesanan gagal dimuat.");
+                var response = ToOrderItemResponse(saved);
                 await _orderItemRepository.CommitTransactionAsync();
-
-                /*                _logger.LogInformation($"Product berhasil dibuat: Product {product.Id}, Store {product.StoreId}, Product {product.ProductName}");
-                */
-                var created = await GetByIdAsync(orderItem.Id);
-                return created != null ? ToOrderItemResponse(created) : null;
+                return response;
             }
-            catch (Exception ex)
+            catch
             {
+                await _orderItemRepository.RollbackTransactionAsync();
                 throw;
             }
         }
 
-        public async Task<bool> DeleteAsync(long orderItemId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<List<OrderItem>> GetAllAsync(long orderId)
         {
-            var orders = await _orderItemRepository.GetAllAsync("Order", "Product");
-
-            orders = orders.Where(oi => oi.OrderId == orderId).ToList();
-
-            if (!orders.Any()) return null;
-
-            return orders;
+            var items = await _orderItemRepository.GetAllAsync("Product");
+            return items.Where(item => item.OrderId == orderId).ToList();
         }
 
         public async Task<OrderItem?> GetByIdAsync(long orderItemId)
         {
+            return await _orderItemRepository.GetByIdAsync(orderItemId, "Product");
+        }
+
+        public Task<OrderItemResponse?> UpdateAsync(long orderItemId, OrderItemRequest request)
+        {
             throw new NotImplementedException();
         }
 
-        public async Task<OrderItemResponse?> UpdateAsync(long orderItemId, OrderItemRequest request)
+        public Task<bool> DeleteAsync(long orderItemId)
         {
             throw new NotImplementedException();
         }
@@ -83,9 +71,11 @@ namespace marketplace_AdIns_BE.Services
                 Id = orderItem.Id,
                 OrderId = orderItem.OrderId,
                 ProductId = orderItem.ProductId,
-                ProductName = orderItem?.Product?.ProductName ?? string.Empty,
-                UpdatedAt = orderItem?.UpdatedAt ?? DateTime.UtcNow,
-                CreatedAt = orderItem?.CreatedAt ?? DateTime.UtcNow,
+                ProductName = orderItem.Product?.ProductName ?? string.Empty,
+                Quantity = orderItem.Quantity,
+                PriceAtPurchase = orderItem.PriceAtPurchase,
+                CreatedAt = orderItem.CreatedAt,
+                UpdatedAt = orderItem.UpdatedAt
             };
         }
     }

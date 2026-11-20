@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Data;
+using Microsoft.EntityFrameworkCore;
 using marketplace_AdIns_BE.Data;
 using Microsoft.EntityFrameworkCore.Storage;
 namespace marketplace_AdIns_BE.Repositories
@@ -65,9 +66,11 @@ namespace marketplace_AdIns_BE.Repositories
             return await _context.SaveChangesAsync();
         }
 
-        public async Task BeginTransactionAsync()
+        public async Task BeginTransactionAsync(IsolationLevel? isolationLevel = null)
         {
-            _transaction = await _context.Database.BeginTransactionAsync();
+            _transaction = isolationLevel.HasValue
+                ? await _context.Database.BeginTransactionAsync(isolationLevel.Value)
+                : await _context.Database.BeginTransactionAsync();
         }
 
         public async Task CommitTransactionAsync()
