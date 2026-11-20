@@ -57,19 +57,23 @@ namespace marketplace_AdIns_BE.Services
             return true;
         }
 
-        public async Task<List<Cart>?> GetAllAsync(long buyerId)
+        public async Task<List<CartResponse>?> GetAllAsync(long buyerId)
         {
-            var carts = await _cartRepository.GetAllAsync("User", "Product");
+            // Tambahkan "Product.Store"
+            var carts = await _cartRepository.GetAllAsync("User", "Product", "Product.Store");
+
             carts = carts.Where(c => c.User?.Id == buyerId).ToList();
 
             if (!carts.Any()) return null;
 
-            return carts;
+            var cartResponses = carts.Select(c => ToCartResponse(c)).ToList();
+
+            return cartResponses;
         }
 
         public async Task<Cart?> GetByIdAsync(long cartId)
         {
-            var cart = await _cartRepository.GetByIdAsync(cartId, "User", "Product");
+            var cart = await _cartRepository.GetByIdAsync(cartId, "User", "Product", "Product.Store");
             if (cart == null) return null;
 
             return cart;
@@ -103,6 +107,8 @@ namespace marketplace_AdIns_BE.Services
                 Id = cart.Id,
                 ProductId = cart.ProductId,
                 ProductName = cart.Product?.ProductName ?? string.Empty,
+                StoreId = (long)(cart.Product?.StoreId),
+                StoreName = cart.Product?.Store?.StoreName ?? string.Empty,
                 UserId = cart.UserId,
                 UserName = cart.User?.Name ?? string.Empty,
                 Quantity = cart.Quantity,
