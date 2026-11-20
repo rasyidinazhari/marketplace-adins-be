@@ -6,8 +6,8 @@ using marketplace_AdIns_BE.Services;
 namespace marketplace_AdIns_BE.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "Buyer")]
-    [Route("api/cart")]
+    [Authorize]
+    [Route("api/carts")]
     public class CartController : ControllerBase
     {
         private readonly ICartService _cartService;
@@ -17,7 +17,7 @@ namespace marketplace_AdIns_BE.Controllers
             _cartService = cartService;
         }
 
-        /*[HttpGet]
+        [HttpGet]
         public async Task<IActionResult> GetCart()
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
@@ -32,7 +32,7 @@ namespace marketplace_AdIns_BE.Controllers
         }
 
         [HttpPost("items")]
-        public async Task<IActionResult> AddItem([FromBody] AddCartItemRequest request)
+        public async Task<IActionResult> AddItem([FromBody] CartRequest request)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
 
@@ -41,13 +41,13 @@ namespace marketplace_AdIns_BE.Controllers
                 return Unauthorized("Invalid or missing user ID claim.");
             }
 
-            var cart = await _cartService.CreateAsync(userId, request);
+            var cart = await _cartService.CreateAsync(request);
             return Ok(cart);
         }
 
-        [HttpPatch("items/{productId:long}")]
-        public async Task<IActionResult> UpdateItem(
-            long productId, [FromBody] UpdateCartItemRequest request)
+        [HttpPut("items/{cartId:long}")]
+        public async Task<IActionResult> UpdateCart(
+            long cartId, [FromBody] CartRequest request)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
 
@@ -56,13 +56,13 @@ namespace marketplace_AdIns_BE.Controllers
                 return Unauthorized("Invalid or missing user ID claim.");
             }
 
-            var cart = await _cartService.UpdateAsync(userId, productId, request.Quantity);
+            var cart = await _cartService.UpdateAsync(cartId, request);
             if (cart == null) return NotFound();
             return Ok(cart);
         }
 
-        [HttpDelete("items/{productId:long}")]
-        public async Task<IActionResult> RemoveItem(long productId)
+        [HttpDelete("items/{cartId:long}")]
+        public async Task<IActionResult> RemoveCartItem(long cartId)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
 
@@ -71,9 +71,9 @@ namespace marketplace_AdIns_BE.Controllers
                 return Unauthorized("Invalid or missing user ID claim.");
             }
 
-            bool removed = await _cartService.DeleteAsync(userId, productId);
+            bool removed = await _cartService.DeleteAsync(cartId);
             if (!removed) return NotFound();
             return NoContent();
-        }*/
+        }
     }
 }

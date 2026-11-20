@@ -328,7 +328,9 @@ namespace marketplace_AdIns_BE.Migrations
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     ProductId = table.Column<long>(type: "bigint", nullable: false),
                     Rating = table.Column<decimal>(type: "numeric(2,1)", nullable: false),
-                    comment = table.Column<string>(type: "text", nullable: false)
+                    comment = table.Column<string>(type: "text", nullable: false),
+                    Created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {

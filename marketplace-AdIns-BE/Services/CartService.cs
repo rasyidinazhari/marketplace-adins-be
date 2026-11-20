@@ -28,8 +28,8 @@ namespace marketplace_AdIns_BE.Services
                     UserId = request.UserId,
                     Quantity = request.Quantity,
                     TotalPrice = request.TotalPrice,
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
                 };
 
                 await _cartRepository.AddAsync(cart);
@@ -81,6 +81,15 @@ namespace marketplace_AdIns_BE.Services
             var cart = await _cartRepository.GetByIdAsync(cartId);
             if (cart == null) return null;
 
+            if (request.Quantity != null)
+            {
+                cart.Quantity = request.Quantity;
+            }
+            if (request.TotalPrice != null)
+            {
+                cart.TotalPrice = request.TotalPrice;
+            }
+
             _cartRepository.Update(cart);
             await _cartRepository.SaveChangesAsync();
 
@@ -98,8 +107,9 @@ namespace marketplace_AdIns_BE.Services
                 UserId = cart.UserId,
                 UserName = cart.User?.Name ?? string.Empty,
                 Quantity = cart.Quantity,
-                UpdatedAt = cart.UpdatedAt ?? DateTime.Now,
-                CreatedAt = cart.CreatedAt ?? DateTime.Now,
+                TotalPrice = cart.TotalPrice,
+                UpdatedAt = cart.UpdatedAt ?? DateTime.UtcNow,
+                CreatedAt = cart.CreatedAt ?? DateTime.UtcNow,
             };
         }
     }

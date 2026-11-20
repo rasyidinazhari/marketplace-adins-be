@@ -23,6 +23,6 @@ namespace marketplace_AdIns_BE.DTOs
 
         [Range(0, int.MaxValue, ErrorMessage = "ProductStock Minimal 0")]
         public int? ProductStock { get; set; }
-
+   
     }
 }

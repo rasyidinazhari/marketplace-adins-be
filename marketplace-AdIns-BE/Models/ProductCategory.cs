@@ -14,7 +14,7 @@ namespace marketplace_AdIns_BE.Models
         public long CategoryId { get; set; }
         public Category? Category { get; set; }
 
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
-        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }

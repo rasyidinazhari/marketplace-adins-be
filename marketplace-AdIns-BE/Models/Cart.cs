@@ -16,8 +16,8 @@ namespace marketplace_AdIns_BE.Models
         public long ProductId { get; set; }
         public Product? Product { get; set; }
 
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
-        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
 
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Quantity Minimal 1")]

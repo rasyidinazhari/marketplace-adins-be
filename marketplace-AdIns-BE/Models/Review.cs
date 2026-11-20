@@ -22,5 +22,8 @@ namespace marketplace_AdIns_BE.Models
 
         [Required]
         public string? comment { get; set; } = string.Empty;
+
+        public DateTime? Created_at { get; set; }
+        public DateTime? Updated_at { get; set; }
     }
 }

@@ -30,8 +30,8 @@ namespace marketplace_AdIns_BE.Services
                     ProductDescription = request.ProductDescription,
                     ProductPrice = request.ProductPrice,
                     ProductStock = request.ProductStock,
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
                     isActive = true
                 };
 
@@ -73,26 +73,39 @@ namespace marketplace_AdIns_BE.Services
             }
         }
 
-        public async Task<List<Product>?> GetAllAsync(int? sellerId)
+        public async Task<List<Product>?> GetAllAsync(string? search, long? sellerId, int page, int limit)
         {
-            var products = await _productRepository.GetAllAsync("Category", "Store");
+            var products = await _productRepository.GetAllAsync("Store");
 
+            // For Seller
             if (sellerId != null)
             {
-                products = products.Where(p => p.Store.UserId == sellerId && p.isActive == true).ToList();
-            } else
+                if (!string.IsNullOrEmpty(search))
+                {
+                    products = products.Where(p => p.Store.UserId == sellerId && p.isActive == true && p.ProductName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+                } else
+                {
+                    products = products.Where(p => p.Store.UserId == sellerId && p.isActive == true).ToList();
+                }
+            } else // For Buyer
             {
-                products = products.Where(p => p.ProductStock > 0).ToList();
+                if (!string.IsNullOrEmpty(search))
+                {
+                    products = products.Where(p => p.isActive == true && p.ProductName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+                } else
+                {
+                    products = products.Where(p => p.ProductStock > 0 && p.isActive == true).ToList();
+                }
             }
 
             if (!products.Any()) return null;
 
-            return products;
+            return products.Skip((page - 1) * limit).Take(limit).ToList();
         }
 
         public async Task<Product?> GetByIdAsync(long productId)
         {
-            var product = await _productRepository.GetByIdAsync(productId, "Category", "Store");
+            var product = await _productRepository.GetByIdAsync(productId, "ProductCategories.Category", "Store");
 
             if (product == null) return null;
             if (!(bool)product.isActive) return null;
@@ -102,8 +115,26 @@ namespace marketplace_AdIns_BE.Services
 
         public async Task<ProductResponse?> UpdateAsync(long productId, ProductRequest request)
         {
-            var product = await _productRepository.GetByIdAsync(productId);
+            var products = await _productRepository.GetAllAsync();
+            var product = products.FirstOrDefault(p => p.Id == productId && p.StoreId == request.StoreId);
             if (product == null) return null;
+
+            if (request.ProductName != null)
+            {
+                product.ProductName = request.ProductName;
+            } 
+            if (request.ProductDescription != null)
+            {
+                product.ProductDescription = request.ProductDescription;
+            } 
+            if (request.ProductPrice != null)
+            {
+                product.ProductPrice = request.ProductPrice;
+            } 
+            if (request.ProductStock != null)
+            {
+                product.ProductStock = request.ProductStock;
+            }
 
             _productRepository.Update(product);
             await _productRepository.SaveChangesAsync();
@@ -139,8 +170,8 @@ namespace marketplace_AdIns_BE.Services
                 ProductDescription = product.ProductDescription ?? string.Empty,
                 ProductPrice = product.ProductPrice ?? 0,
                 ProductStock = product.ProductStock ?? 0,
-                UpdatedAt = product.UpdatedAt ?? DateTime.Now,
-                CreatedAt = product.CreatedAt ?? DateTime.Now,
+                UpdatedAt = product.UpdatedAt ?? DateTime.UtcNow,
+                CreatedAt = product.CreatedAt ?? DateTime.UtcNow,
             };
         }
     }
