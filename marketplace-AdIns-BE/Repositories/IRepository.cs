@@ -1,4 +1,6 @@
-﻿namespace marketplace_AdIns_BE.Repositories
+﻿using System.Data;
+
+namespace marketplace_AdIns_BE.Repositories
 {
     public interface IRepository<T> where T : class
     {
@@ -11,7 +13,7 @@
         void Delete(T entity);
         Task<int> SaveChangesAsync();
 
-        Task BeginTransactionAsync();
+        Task BeginTransactionAsync(IsolationLevel? isolationLevel = null);
         Task CommitTransactionAsync();
         Task RollbackTransactionAsync();
 

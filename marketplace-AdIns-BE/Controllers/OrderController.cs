@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using marketplace_AdIns_BE.DTOs;
-using marketplace_AdIns_BE.Services;
-using marketplace_AdIns_BE.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Security.Claims;
+using marketplace_AdIns_BE.DTOs;
+using marketplace_AdIns_BE.Models;
+using marketplace_AdIns_BE.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace marketplace_AdIns_BE.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("api/orders")]
     public class OrderController : ControllerBase
     {
@@ -19,98 +20,112 @@ namespace marketplace_AdIns_BE.Controllers
             _orderService = orderService;
         }
 
-        [Authorize]
+        [Authorize(Roles = "Buyer")]
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] OrderRequest request)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
 
-            if (!long.TryParse(userIdClaim, out long userId))
+            if (!long.TryParse(userIdClaim, out long userId) || userId <= 0)
             {
                 return Unauthorized("Invalid or missing user ID claim.");
             }
 
-            var result = await _orderService.CreateAsync(request);
-            return Created($"api/orders/{result.Id}", result);
-        }
-
-        [Authorize]
-        [HttpGet()]
-        public async Task<IActionResult> GetAllOrders()
-        {
             try
             {
-                var userIdClaim = User.FindFirst("userId")?.Value;
-                string? role = User.FindFirst(ClaimTypes.Role)?.Value;
-
-                if (!long.TryParse(userIdClaim, out long userId))
-                {
-                    return Unauthorized("Invalid or missing user ID claim.");
-                }
-
-                List<Order> orders = null;
-                if (role == "Buyer")
-                {
-                    orders = await _orderService.GetAllOrderForBuyerAsync(userId);
-                } else if (role == "Seller")
-                {
-                    orders = await _orderService.GetAllOrderForSellerAsync(userId);
-                }
-
-                return Ok(orders);
-
-            } catch (Exception Ex)
+                var order = await _orderService.CreateAsync(userId, request);
+                return CreatedAtAction(nameof(GetOrder), new { orderId = order.Id }, order);
+            }
+            catch (ValidationException ex)
             {
-                throw;
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (DBConcurrencyException ex)
+            {
+                return Conflict(new { message = ex.Message });
             }
         }
 
-        /*[Authorize]
-        [HttpGet("sales")]
-        public async Task<IActionResult> GetSalesOrders()
+        [Authorize(Roles = "Buyer,Seller")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllOrders()
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
 
-            if (!long.TryParse(userIdClaim, out long userId))
+            if (!long.TryParse(userIdClaim, out long userId) || userId <= 0)
             {
                 return Unauthorized("Invalid or missing user ID claim.");
             }
 
-            var orders = await _orderService.GetSalesAsync(userId);
-            return Ok(orders);
-        }*/
+            string? role = User.FindFirst(ClaimTypes.Role)?.Value;
+            List<OrderResponse> orders;
+            if (role == "Buyer")
+            {
+                orders = await _orderService.GetAllOrderForBuyerAsync(userId);
+            }
+            else if (role == "Seller")
+            {
+                orders = await _orderService.GetAllOrderForSellerAsync(userId);
+            }
+            else
+            {
+                return Forbid();
+            }
 
-        [Authorize]
+            return Ok(orders);
+        }
+
+        [Authorize(Roles = "Buyer,Seller")]
         [HttpGet("{orderId:long}")]
         public async Task<IActionResult> GetOrder(long orderId)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
 
-            if (!long.TryParse(userIdClaim, out long userId))
+            if (!long.TryParse(userIdClaim, out long userId) || userId <= 0)
             {
                 return Unauthorized("Invalid or missing user ID claim.");
             }
 
-            var order = await _orderService.GetByIdAsync(orderId);
+            string? role = User.FindFirst(ClaimTypes.Role)?.Value;
+            var order = await _orderService.GetByIdAsync(orderId, userId, role == "Seller");
             if (order == null) return NotFound();
             return Ok(order);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Buyer,Seller")]
         [HttpPatch("{orderId:long}")]
         public async Task<IActionResult> UpdateOrderStatus(
-            long orderId, [FromBody] OrderRequest request)
+            long orderId, [FromBody] UpdateOrderStatusRequest request)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
 
-            if (!long.TryParse(userIdClaim, out long userId))
+            if (!long.TryParse(userIdClaim, out long userId) || userId <= 0)
             {
                 return Unauthorized("Invalid or missing user ID claim.");
             }
 
-            var order = await _orderService.UpdateAsync(orderId, request);
-            if (order == null) return NotFound();
-            return Ok(order);
+            if (!Enum.TryParse<OrderStatus>(request.Status, true, out var status)
+                || !string.Equals(status.ToString(), request.Status, StringComparison.OrdinalIgnoreCase)
+                || !Enum.IsDefined(typeof(OrderStatus), status))
+            {
+                return BadRequest(new { message = "Status pesanan tidak dikenal." });
+            }
+
+            try
+            {
+                string? role = User.FindFirst(ClaimTypes.Role)?.Value;
+                var order = await _orderService.UpdateStatusAsync(orderId, userId, role == "Seller", status);
+                if (order == null) return NotFound();
+                return Ok(order);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
+            catch (DBConcurrencyException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
     }
 }
