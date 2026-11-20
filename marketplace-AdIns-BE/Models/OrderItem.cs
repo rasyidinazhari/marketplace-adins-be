@@ -22,7 +22,7 @@ namespace marketplace_AdIns_BE.Models
 
         [Column(TypeName = "decimal(12,2)")]
         [Range(0, int.MaxValue, ErrorMessage = "PriceAtPurchase Minimal 0")]
-        public long PriceAtPurchase { get; set; }
+        public decimal PriceAtPurchase { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
