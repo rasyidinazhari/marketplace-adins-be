@@ -92,7 +92,8 @@ namespace marketplace_AdIns_BE.Services
         public async Task<List<Order?>> GetAllOrderForBuyerAsync(long buyerId)
         {
             var orders = await _orderRepository.GetAllAsync("User", "Store", "Voucher", "Address");
-
+/*            var orders = await _orderRepository.GetAllAsync();
+*/
             orders = orders.Where(o => o.UserId == buyerId).ToList();
 
             if (!orders.Any()) return null;
