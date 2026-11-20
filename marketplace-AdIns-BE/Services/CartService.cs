@@ -65,7 +65,6 @@ namespace marketplace_AdIns_BE.Services
             if (!carts.Any()) return null;
 
             return carts;
-            throw new NotImplementedException();
         }
 
         public async Task<Cart?> GetByIdAsync(long cartId)
