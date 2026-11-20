@@ -12,7 +12,7 @@ using marketplace_AdIns_BE.Data;
 namespace marketplace_AdIns_BE.Migrations
 {
     [DbContext(typeof(MarketplaceDbContext))]
-    [Migration("20261119120914_InitialCreate")]
+    [Migration("20261119233637_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -224,9 +224,6 @@ namespace marketplace_AdIns_BE.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("CategoryId")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -253,11 +250,38 @@ namespace marketplace_AdIns_BE.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.HasIndex("StoreId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("marketplace_AdIns_BE.Models.ProductCategory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("CategoryId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductCategory");
                 });
 
             modelBuilder.Entity("marketplace_AdIns_BE.Models.Review", b =>
@@ -544,21 +568,32 @@ namespace marketplace_AdIns_BE.Migrations
 
             modelBuilder.Entity("marketplace_AdIns_BE.Models.Product", b =>
                 {
-                    b.HasOne("marketplace_AdIns_BE.Models.Category", "Category")
-                        .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("marketplace_AdIns_BE.Models.Store", "Store")
                         .WithMany("Products")
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("Store");
+                });
+
+            modelBuilder.Entity("marketplace_AdIns_BE.Models.ProductCategory", b =>
+                {
+                    b.HasOne("marketplace_AdIns_BE.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("marketplace_AdIns_BE.Models.Product", "Product")
+                        .WithMany("ProductCategories")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Category");
 
-                    b.Navigation("Store");
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("marketplace_AdIns_BE.Models.Review", b =>
@@ -619,11 +654,6 @@ namespace marketplace_AdIns_BE.Migrations
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("marketplace_AdIns_BE.Models.Category", b =>
-                {
-                    b.Navigation("Products");
-                });
-
             modelBuilder.Entity("marketplace_AdIns_BE.Models.Order", b =>
                 {
                     b.Navigation("OrderItems");
@@ -634,6 +664,8 @@ namespace marketplace_AdIns_BE.Migrations
                     b.Navigation("Carts");
 
                     b.Navigation("OrderItems");
+
+                    b.Navigation("ProductCategories");
 
                     b.Navigation("Reviews");
                 });

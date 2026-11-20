@@ -25,7 +25,7 @@ namespace marketplace_AdIns_BE.Services
                 Product product = new()
                 {
                     StoreId = request.StoreId,
-                    CategoryId = request.CategoryId,
+                    /*CategoryId = request.CategoryId,*/
                     ProductName = request.ProductName,
                     ProductDescription = request.ProductDescription,
                     ProductPrice = request.ProductPrice,
@@ -34,6 +34,29 @@ namespace marketplace_AdIns_BE.Services
                     UpdatedAt = DateTime.Now,
                     isActive = true
                 };
+
+                product.ProductCategories = new List<ProductCategory>();
+
+
+                /*await _bookingRepository.AddAsync(booking); --> Ini tidak dipakai */
+
+                foreach (var categoryId in request.CategoryIds)
+                {
+                    /*seat.IsAvailable = false;
+                    _seatRepository.Update(seat);*/
+
+                    /*await _bookingSeatRepository.AddAsync(new BookingSeat
+                    {
+                        BookingId = booking.Id,
+                        SeatId = seat.Id
+                    });*/
+
+                    ProductCategory newProductCategory = new ProductCategory();
+                    newProductCategory.Product = product;
+                    newProductCategory.CategoryId = categoryId;
+
+                    product.ProductCategories.Add(newProductCategory);
+                }
 
                 await _productRepository.AddAsync(product);
 
@@ -104,10 +127,14 @@ namespace marketplace_AdIns_BE.Services
             return new ProductResponse
             {
                 Id = product.Id,
-                CategoryId = product.CategoryId,
+                /*CategoryId = product.ProductCategories.FirstOrDefault()?.CategoryId ?? 0,
+                CategoryName = product.ProductCategories.FirstOrDefault()?.Category?.CategoryName ?? string.Empty,*/
+                Categories = product.ProductCategories
+                    .Where(pc => pc.Category != null && pc.ProductId == product.Id)
+                    .Select(pc => pc.Category!)
+                    .ToList(),
                 StoreId = product.StoreId,
                 StoreName = product.Store?.StoreName ?? string.Empty,
-                CategoryName = product.Category?.CategoryName ?? string.Empty,
                 ProductName = product.ProductName ?? string.Empty,
                 ProductDescription = product.ProductDescription ?? string.Empty,
                 ProductPrice = product.ProductPrice ?? 0,

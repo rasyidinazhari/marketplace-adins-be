@@ -7,8 +7,10 @@ namespace marketplace_AdIns_BE.DTOs
         [Required(ErrorMessage = "StoreId Wajib Diisi")]
         public long StoreId { get; set; }
 
-        [Required(ErrorMessage = "CategoryId Wajib Diisi")]
-        public long CategoryId { get; set; }
+        /*[Required(ErrorMessage = "CategoryId Wajib Diisi")]
+        public long CategoryId { get; set; }*/
+        [Required(ErrorMessage = "Pilih Minimal 1 Kategori")]
+        public List<long> CategoryIds { get; set; } = new();
 
         [MinLength(5, ErrorMessage = "ProductName Minimal 5 Karakter")]
         public string? ProductName { get; set; }

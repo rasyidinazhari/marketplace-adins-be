@@ -12,10 +12,6 @@ namespace marketplace_AdIns_BE.Models
         public long StoreId { get; set; }
         public Store? Store { get; set; }
 
-        [ForeignKey(nameof(Category))]
-        public long CategoryId { get; set; }
-        public Category? Category { get; set; }
-
         public string? ProductName { get; set; } = string.Empty;
         public string? ProductDescription { get; set; } = string.Empty ;
 
@@ -35,5 +31,6 @@ namespace marketplace_AdIns_BE.Models
         public ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
     }
 }

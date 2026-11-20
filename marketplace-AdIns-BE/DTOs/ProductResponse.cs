@@ -1,15 +1,18 @@
-﻿namespace marketplace_AdIns_BE.DTOs
+﻿using marketplace_AdIns_BE.Models;
+
+namespace marketplace_AdIns_BE.DTOs
 {
     public class ProductResponse
     {
         public long Id { get; set; }
         public long StoreId { get; set; }
-        public string StoreName { get; set; }
-        public long CategoryId { get; set; }
-        public string CategoryName { get; set; }
-        public string ProductName { get; set; }
+        public string? StoreName { get; set; }
+        /*public long CategoryId { get; set; }
+        public string CategoryName { get; set; }*/
+        public List<Category>? Categories { get; set; }
+        public string? ProductName { get; set; }
 
-        public string ProductDescription { get; set; }
+        public string? ProductDescription { get; set; }
 
         public decimal ProductPrice { get; set; }
 

@@ -63,11 +63,11 @@ namespace marketplace_AdIns_BE.Data
                 .WithMany(s => s.Carts)
                 .HasForeignKey(se => se.ProductId);
 
-            modelBuilder.Entity<Product>()
+            /*modelBuilder.Entity<Product>()
                 .HasOne(b => b.Category)
                 .WithMany(s => s.Products)
                 .HasForeignKey(b => b.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict);*/
 
             modelBuilder.Entity<Product>()
                 .HasOne(b => b.Store)
@@ -147,6 +147,17 @@ namespace marketplace_AdIns_BE.Data
                 .HasOne(bs => bs.Role)
                 .WithMany()
                 .HasForeignKey(bs => bs.RoleId);
+
+
+            modelBuilder.Entity<ProductCategory>()
+                .HasOne(bs => bs.Product)
+                .WithMany(b => b.ProductCategories)
+                .HasForeignKey(bs => bs.ProductId);
+
+            modelBuilder.Entity<ProductCategory>()
+                .HasOne(bs => bs.Category)
+                .WithMany()
+                .HasForeignKey(bs => bs.CategoryId);
         }
     }
 }
