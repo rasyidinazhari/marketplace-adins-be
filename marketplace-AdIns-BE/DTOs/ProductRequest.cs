@@ -21,7 +21,7 @@ namespace marketplace_AdIns_BE.DTOs
         [Range(1000, double.MaxValue, ErrorMessage = "ProductPrice Minimal 1000")]
         public decimal? ProductPrice { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "ProductStock Minimal 0")]
+        [Range(1, int.MaxValue, ErrorMessage = "ProductStock Minimal 1")]
         public int? ProductStock { get; set; }
    
     }

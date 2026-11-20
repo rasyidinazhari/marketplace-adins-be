@@ -22,7 +22,9 @@ namespace marketplace_AdIns_BE.Controllers
         public async Task<IActionResult> GetProducts(
             [FromQuery] string? search,
             [FromQuery] int page = 1,
-            [FromQuery] int limit = 10)
+            [FromQuery] int limit = 10,
+            [FromQuery] long categoryId = 0
+            )
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
             long? userId = null;
@@ -36,10 +38,10 @@ namespace marketplace_AdIns_BE.Controllers
             // Get All For Buyer
             if (userIdClaim == null || role == "Buyer")
             {
-                products = await _productService.GetAllAsync(search, null, page, limit);
+                products = await _productService.GetAllAsync(search, null, categoryId, page, limit);
             } else // Get All For Seller
             {
-                products = await _productService.GetAllAsync(search, (int?)userId, page, limit);
+                products = await _productService.GetAllAsync(search, (int?)userId, categoryId, page, limit);
             }
             return Ok(products);
         }

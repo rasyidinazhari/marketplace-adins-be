@@ -73,33 +73,51 @@ namespace marketplace_AdIns_BE.Services
             }
         }
 
-        public async Task<List<Product>?> GetAllAsync(string? search, long? sellerId, int page, int limit)
+        public async Task<List<Product>?> GetAllAsync(string? search, long? sellerId, long? categoryId, int page, int limit)
         {
-            var products = await _productRepository.GetAllAsync("Store");
+            // 1. WAJIB Include "ProductCategories" agar bisa difilter berdasarkan kategori
+            var products = await _productRepository.GetAllAsync("Store", "ProductCategories");
 
             // For Seller
             if (sellerId != null)
             {
+                // Filter by Seller
+                products = products.Where(p => p.Store != null && p.Store.UserId == sellerId && p.isActive == true).ToList();
+
                 if (!string.IsNullOrEmpty(search))
                 {
-                    products = products.Where(p => p.Store.UserId == sellerId && p.isActive == true && p.ProductName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
-                } else
-                {
-                    products = products.Where(p => p.Store.UserId == sellerId && p.isActive == true).ToList();
+                    products = products.Where(p => p.ProductName != null && p.ProductName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
                 }
-            } else // For Buyer
+
+                // Filter by Category (Jika categoryId dikirim dan bukan 0)
+                if (categoryId.HasValue && categoryId.Value != 0)
+                {
+                    // Gunakan .Any() untuk mengecek apakah ada kategori yang cocok di dalam list
+                    products = products.Where(p => p.ProductCategories.Any(pc => pc.CategoryId == categoryId.Value)).ToList();
+                }
+            }
+            else // For Buyer
             {
+                // Filter dasar untuk Buyer
+                products = products.Where(p => p.isActive == true && p.ProductStock > 0).ToList();
+
                 if (!string.IsNullOrEmpty(search))
                 {
-                    products = products.Where(p => p.isActive == true && p.ProductName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
-                } else
+                    products = products.Where(p => p.ProductName != null && p.ProductName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+                }
+
+                // Filter by Category untuk Buyer
+                if (categoryId.HasValue && categoryId.Value != 0)
                 {
-                    products = products.Where(p => p.ProductStock > 0 && p.isActive == true).ToList();
+                    products = products.Where(p => p.ProductCategories.Any(pc => pc.CategoryId == categoryId.Value)).ToList();
                 }
             }
 
-            if (!products.Any()) return null;
+            // 2. Jangan return null jika kosong, kembalikan list kosong saja
+            // agar Frontend tidak error (NullReferenceException)
+            if (!products.Any()) return new List<Product>();
 
+            // 3. Pagination
             return products.Skip((page - 1) * limit).Take(limit).ToList();
         }
 
