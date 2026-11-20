@@ -21,6 +21,7 @@ namespace marketplace_AdIns_BE.Models
 
         public ICollection<Order> Orders { get; set; } = new List<Order>();
         public ICollection<Product> Products { get; set; } = new List<Product>();
+        public ICollection<Voucher> Vouchers { get; set; } = new List<Voucher>();
 
     }
 }

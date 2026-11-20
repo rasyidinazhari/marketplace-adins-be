@@ -51,17 +51,20 @@ namespace marketplace_AdIns_BE.Data
             modelBuilder.Entity<Address>()
                 .HasOne(s => s.User)
                 .WithMany(m => m.Addresses)
-                .HasForeignKey(s => s.UserId);
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Cart>()
                 .HasOne(s => s.User)
                 .WithMany(t => t.Carts)
-                .HasForeignKey(s => s.UserId);
-
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+                
             modelBuilder.Entity<Cart>()
                 .HasOne(se => se.Product)
                 .WithMany(s => s.Carts)
-                .HasForeignKey(se => se.ProductId);
+                .HasForeignKey(se => se.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             /*modelBuilder.Entity<Product>()
                 .HasOne(b => b.Category)
@@ -73,7 +76,7 @@ namespace marketplace_AdIns_BE.Data
                 .HasOne(b => b.Store)
                 .WithMany(u => u.Products)
                 .HasForeignKey(b => b.StoreId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<OrderItem>()
                 .HasOne(b => b.Product)
@@ -91,13 +94,13 @@ namespace marketplace_AdIns_BE.Data
                 .HasOne(b => b.Product)
                 .WithMany(u => u.Reviews)
                 .HasForeignKey(b => b.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Review>()
                 .HasOne(b => b.User)
                 .WithMany(u => u.Reviews)
                 .HasForeignKey(b => b.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Order>()
                 .HasOne(b => b.Address)
@@ -127,7 +130,13 @@ namespace marketplace_AdIns_BE.Data
                 .HasOne(b => b.User)
                 .WithMany(u => u.Stores)
                 .HasForeignKey(b => b.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Voucher>()
+                .HasOne(b => b.Store)
+                .WithMany(u => u.Vouchers)
+                .HasForeignKey(b => b.StoreId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             /*// Relasi One to One
             modelBuilder.Entity<User>()

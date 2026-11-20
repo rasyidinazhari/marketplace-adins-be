@@ -8,6 +8,8 @@ namespace marketplace_AdIns_BE.Models
         [Key]
         public long Id { get; set; }
         public string Code { get; set; } = string.Empty;
+        public long StoreId { get; set; }
+        public Store? Store { get; set; } = new();
 
         [Required]
         [Column(TypeName = "decimal(12,2)")]

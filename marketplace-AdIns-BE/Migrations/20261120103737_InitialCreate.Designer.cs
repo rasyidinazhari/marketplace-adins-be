@@ -12,7 +12,7 @@ using marketplace_AdIns_BE.Data;
 namespace marketplace_AdIns_BE.Migrations
 {
     [DbContext(typeof(MarketplaceDbContext))]
-    [Migration("20261120064045_InitialCreate")]
+    [Migration("20261120103737_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -478,6 +478,9 @@ namespace marketplace_AdIns_BE.Migrations
                     b.Property<decimal>("MinPurchaseAmount")
                         .HasColumnType("numeric(12,2)");
 
+                    b.Property<long>("StoreId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -485,6 +488,8 @@ namespace marketplace_AdIns_BE.Migrations
 
                     b.HasIndex("Code")
                         .IsUnique();
+
+                    b.HasIndex("StoreId");
 
                     b.ToTable("Vouchers");
                 });
@@ -577,7 +582,7 @@ namespace marketplace_AdIns_BE.Migrations
                     b.HasOne("marketplace_AdIns_BE.Models.Store", "Store")
                         .WithMany("Products")
                         .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Store");
@@ -607,13 +612,13 @@ namespace marketplace_AdIns_BE.Migrations
                     b.HasOne("marketplace_AdIns_BE.Models.Product", "Product")
                         .WithMany("Reviews")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("marketplace_AdIns_BE.Models.User", "User")
                         .WithMany("Reviews")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Product");
@@ -626,7 +631,7 @@ namespace marketplace_AdIns_BE.Migrations
                     b.HasOne("marketplace_AdIns_BE.Models.User", "User")
                         .WithMany("Stores")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("marketplace_AdIns_BE.Models.User", null)
@@ -655,6 +660,17 @@ namespace marketplace_AdIns_BE.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("marketplace_AdIns_BE.Models.Voucher", b =>
+                {
+                    b.HasOne("marketplace_AdIns_BE.Models.Store", "Store")
+                        .WithMany("Vouchers")
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Store");
+                });
+
             modelBuilder.Entity("marketplace_AdIns_BE.Models.Address", b =>
                 {
                     b.Navigation("Orders");
@@ -681,6 +697,8 @@ namespace marketplace_AdIns_BE.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("Products");
+
+                    b.Navigation("Vouchers");
                 });
 
             modelBuilder.Entity("marketplace_AdIns_BE.Models.User", b =>
