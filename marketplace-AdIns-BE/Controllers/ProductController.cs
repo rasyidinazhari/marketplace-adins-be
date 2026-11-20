@@ -25,6 +25,11 @@ namespace marketplace_AdIns_BE.Controllers
             [FromQuery] int limit = 10)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
+            long? userId = null;
+            if (long.TryParse(userIdClaim, out long parsedId))
+            {
+                userId = parsedId;
+            }
             string? role = User.FindFirst(ClaimTypes.Role)?.Value;
             List<Product> products = new List<Product>();
 
@@ -34,7 +39,7 @@ namespace marketplace_AdIns_BE.Controllers
                 products = await _productService.GetAllAsync(search, null, page, limit);
             } else // Get All For Seller
             {
-                products = await _productService.GetAllAsync(search, null, page, limit);
+                products = await _productService.GetAllAsync(search, (int?)userId, page, limit);
             }
             return Ok(products);
         }

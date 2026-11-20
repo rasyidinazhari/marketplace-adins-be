@@ -73,23 +73,28 @@ namespace marketplace_AdIns_BE.Services
             }
         }
 
-        public async Task<List<Product>?> GetAllAsync(string? search, int? sellerId, int page, int limit)
+        public async Task<List<Product>?> GetAllAsync(string? search, long? sellerId, int page, int limit)
         {
             var products = await _productRepository.GetAllAsync("Store");
 
+            // For Seller
             if (sellerId != null)
             {
-                products = products.Where(p => p.Store.UserId == sellerId && p.isActive == true).ToList();
                 if (!string.IsNullOrEmpty(search))
                 {
                     products = products.Where(p => p.Store.UserId == sellerId && p.isActive == true && p.ProductName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+                } else
+                {
+                    products = products.Where(p => p.Store.UserId == sellerId && p.isActive == true).ToList();
                 }
-            } else
+            } else // For Buyer
             {
-                products = products.Where(p => p.ProductStock > 0).ToList();
                 if (!string.IsNullOrEmpty(search))
                 {
-                    products = products.Where(p => p.Store.UserId == sellerId && p.isActive == true && p.ProductName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+                    products = products.Where(p => p.isActive == true && p.ProductName.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+                } else
+                {
+                    products = products.Where(p => p.ProductStock > 0 && p.isActive == true).ToList();
                 }
             }
 
