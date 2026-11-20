@@ -24,7 +24,7 @@ namespace marketplace_AdIns_BE.Controllers
             [FromQuery] int page = 1,
             [FromQuery] int limit = 10)
         {
-            var userIdClaim = User.FindFirst("userId`")?.Value;
+            var userIdClaim = User.FindFirst("userId")?.Value;
             string? role = User.FindFirst(ClaimTypes.Role)?.Value;
             List<Product> products = new List<Product>();
 
