@@ -1,4 +1,4 @@
-using marketplace_AdIns_BE.Data;
+﻿using marketplace_AdIns_BE.Data;
 using marketplace_AdIns_BE.Repositories;
 using marketplace_AdIns_BE.Services;
 using marketplace_AdIns_BE.Middlewares;
@@ -29,6 +29,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 // Add services to the container.
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IOrderItemService, OrderItemService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
