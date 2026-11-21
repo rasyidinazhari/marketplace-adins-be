@@ -3,6 +3,7 @@
     public class VoucherResponse
     {
         public long Id { get; set; }
+        public long StoreId { get; set; }
         public string Code { get; set; } = string.Empty;
         public int DiscountPercentage { get; set; }
         public int MinPurchaseAmount { get; set; }

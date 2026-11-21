@@ -14,6 +14,7 @@ namespace marketplace_AdIns_BE.Services
         private readonly IRepository<Cart> _cartRepository;
         private readonly IRepository<Address> _addressRepository;
         private readonly IRepository<Voucher> _voucherRepository;
+        private readonly IRepository<Store> _storeRepository;
         private readonly IOrderItemService _orderItemService;
 
         public OrderService(
@@ -21,12 +22,14 @@ namespace marketplace_AdIns_BE.Services
             IRepository<Cart> cartRepository,
             IRepository<Address> addressRepository,
             IRepository<Voucher> voucherRepository,
+            IRepository<Store> storeRepository,
             IOrderItemService orderItemService)
         {
             _orderRepository = orderRepository;
             _cartRepository = cartRepository;
             _addressRepository = addressRepository;
             _voucherRepository = voucherRepository;
+            _storeRepository = storeRepository;
             _orderItemService = orderItemService;
         }
 
@@ -150,10 +153,10 @@ namespace marketplace_AdIns_BE.Services
             }
             else
             {
-                var vouchers = await _voucherRepository.GetAllAsync();
-                voucher = vouchers.SingleOrDefault(v => v.Code == code);
+                var store = await _storeRepository.GetByIdAsync(request.StoreId, "Vouchers");
+                voucher = store?.Vouchers.FirstOrDefault(v => v.Code == code);
             }
-            if (voucher == null || !voucher.IsActive || (!string.IsNullOrEmpty(code) && voucher.Code != code)
+            if (voucher == null || voucher.StoreId != request.StoreId || !voucher.IsActive || (!string.IsNullOrEmpty(code) && voucher.Code != code)
                 || voucher.DiscountPercentage is < 0 or > 100 || voucher.MaxDiscountAmount < 0)
                 throw new ValidationException("Voucher tidak valid atau tidak aktif.");
             if (subtotal < voucher.MinPurchaseAmount)
