@@ -20,7 +20,7 @@ namespace marketplace_AdIns_BE.Controllers
             _orderService = orderService;
         }
 
-        [Authorize(Roles = "Buyer")]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] OrderRequest request)
         {
@@ -46,7 +46,7 @@ namespace marketplace_AdIns_BE.Controllers
             }
         }
 
-        [Authorize(Roles = "Buyer,Seller")]
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllOrders()
         {
@@ -75,7 +75,7 @@ namespace marketplace_AdIns_BE.Controllers
             return Ok(orders);
         }
 
-        [Authorize(Roles = "Buyer,Seller")]
+        [Authorize]
         [HttpGet("{orderId:long}")]
         public async Task<IActionResult> GetOrder(long orderId)
         {
@@ -92,7 +92,7 @@ namespace marketplace_AdIns_BE.Controllers
             return Ok(order);
         }
 
-        [Authorize(Roles = "Buyer,Seller")]
+        [Authorize]
         [HttpPatch("{orderId:long}")]
         public async Task<IActionResult> UpdateOrderStatus(
             long orderId, [FromBody] UpdateOrderStatusRequest request)
