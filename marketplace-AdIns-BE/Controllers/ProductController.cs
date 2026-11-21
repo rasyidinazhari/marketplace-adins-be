@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using marketplace_AdIns_BE.DTOs;
 using marketplace_AdIns_BE.Services;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Security.Claims;
 using marketplace_AdIns_BE.Models;
 
@@ -41,7 +43,7 @@ namespace marketplace_AdIns_BE.Controllers
                 products = await _productService.GetAllAsync(search, null, categoryId, page, limit);
             } else // Get All For Seller
             {
-                products = await _productService.GetAllAsync(search, (int?)userId, categoryId, page, limit);
+                products = await _productService.GetAllAsync(search, userId, categoryId, page, limit);
             }
             return Ok(products);
         }
@@ -54,13 +56,22 @@ namespace marketplace_AdIns_BE.Controllers
             return Ok(product);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Seller")]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] ProductRequest request)
         {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+
+            if (!long.TryParse(userIdClaim, out long userId) || userId <= 0)
+            {
+                return Unauthorized("Invalid or missing user ID claim.");
+            }
+
             try
             {
-                var result = await _productService.CreateAsync(request);
+                var result = await _productService.CreateAsync(userId, request);
+                if (result == null) return NotFound();
+
                 return Created($"/api/products/{result.Id}", result);
             }
             catch (Exception ex)
@@ -69,20 +80,45 @@ namespace marketplace_AdIns_BE.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Seller")]
         [HttpPut("{productId:long}")]
         public async Task<IActionResult> UpdateProduct(long productId, [FromBody] ProductRequest request)
         {
-            var result = await _productService.UpdateAsync(productId, request);
-            if (result == null) return NotFound();
-            return Ok(result);
+            var userIdClaim = User.FindFirst("userId")?.Value;
+
+            if (!long.TryParse(userIdClaim, out long userId) || userId <= 0)
+            {
+                return Unauthorized("Invalid or missing user ID claim.");
+            }
+
+            try
+            {
+                var result = await _productService.UpdateAsync(productId, userId, request);
+                if (result == null) return NotFound();
+                return Ok(result);
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (DBConcurrencyException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Seller")]
         [HttpDelete("{productId:long}")]
         public async Task<IActionResult> DeleteProduct(long productId)
         {
-            var success = await _productService.DeleteAsync(productId);
+            var userIdClaim = User.FindFirst("userId")?.Value;
+
+            if (!long.TryParse(userIdClaim, out long userId) || userId <= 0)
+            {
+                return Unauthorized("Invalid or missing user ID claim.");
+            }
+
+            var success = await _productService.DeleteAsync(productId, userId);
             if (!success) return NotFound();
             return NoContent();
         }
