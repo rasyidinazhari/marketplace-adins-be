@@ -18,7 +18,7 @@ namespace marketplace_AdIns_BE.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCart()
+        public async Task<IActionResult> GetAllCartsByUserId()
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
 
