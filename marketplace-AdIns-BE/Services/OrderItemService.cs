@@ -43,10 +43,13 @@ namespace marketplace_AdIns_BE.Services
             }
         }
 
-        public async Task<List<OrderItem>> GetAllAsync(long orderId)
+        public async Task<List<OrderItemResponse>> GetAllAsync(long orderId)
         {
             var items = await _orderItemRepository.GetAllAsync("Product");
-            return items.Where(item => item.OrderId == orderId).ToList();
+            return items
+                .Where(item => item.OrderId == orderId)
+                .Select(ToOrderItemResponse)
+                .ToList();
         }
 
         public async Task<OrderItem?> GetByIdAsync(long orderItemId)

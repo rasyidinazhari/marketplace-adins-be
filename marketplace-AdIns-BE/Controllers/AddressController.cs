@@ -19,6 +19,7 @@ namespace marketplace_AdIns_BE.Controllers
         }
 
         // 1. GET: Ambil semua alamat milik user yang sedang login
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllAddresses()
         {
@@ -34,6 +35,7 @@ namespace marketplace_AdIns_BE.Controllers
         }
 
         // 2. GET: Ambil detail satu alamat berdasarkan ID
+        [Authorize]
         [HttpGet("{addressId:long}")]
         public async Task<IActionResult> GetAddressById(long addressId)
         {
@@ -52,6 +54,7 @@ namespace marketplace_AdIns_BE.Controllers
         }
 
         // 3. POST: Tambah alamat baru
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateAddress([FromBody] AddressRequest request)
         {
@@ -77,6 +80,7 @@ namespace marketplace_AdIns_BE.Controllers
         }
 
         // 4. PUT: Ubah alamat
+        [Authorize]
         [HttpPut("{addressId:long}")]
         public async Task<IActionResult> UpdateAddress(long addressId, [FromBody] AddressRequest request)
         {
@@ -101,6 +105,7 @@ namespace marketplace_AdIns_BE.Controllers
         }
 
         // 5. DELETE: Hapus alamat
+        [Authorize]
         [HttpDelete("{addressId:long}")]
         public async Task<IActionResult> DeleteAddress(long addressId)
         {
