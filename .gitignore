@@ -25,6 +25,17 @@ bld/
 *.vssscc
 *.vspscc
 
+## Visual Studio Code
+.vscode/
+*.code-workspace
+
+## Local environment & runtime cache
+.aspnet/
+.local/
+Library/
+**/Library/
+**/.local/
+
 ## User-specific files
 *.rsuser
 *.suo
@@ -48,3 +59,4 @@ appsettings.*.json
 
 ## Runtime logs (Serilog)
 logs/
+

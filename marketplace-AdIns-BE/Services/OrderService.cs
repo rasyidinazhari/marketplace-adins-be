@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using marketplace_AdIns_BE.Repositories;
 using marketplace_AdIns_BE.DTOs;
@@ -50,7 +50,7 @@ namespace marketplace_AdIns_BE.Services
 
         private async Task<List<OrderResponse>> GetOrdersAsync(long userId, bool asSeller)
         {
-            var orders = await _orderRepository.GetAllAsync("User", "Store", "Address", "Voucher");
+            var orders = await _orderRepository.GetAllAsync("User", "Store", "Address", "Voucher", "OrderItems.Product");
             return orders.Where(order => CanAccessOrder(order, userId, asSeller))
                 .OrderByDescending(order => order.Id).Select(ToOrderResponse).ToList();
         }
@@ -225,8 +225,6 @@ namespace marketplace_AdIns_BE.Services
         {
             var response = new OrderDetailResponse
             {
-                Items = order.OrderItems.OrderBy(item => item.Id)
-                    .Select(_orderItemService.ToOrderItemResponse).ToList(),
                 PhoneNumber = order.Address?.PhoneNumber ?? string.Empty,
                 FullAddress = order.Address?.Note,
                 City = order.Address?.City ?? string.Empty,
@@ -238,6 +236,11 @@ namespace marketplace_AdIns_BE.Services
 
         private void SetOrderFields(Order order, OrderResponse response)
         {
+            if (order.OrderItems != null && order.OrderItems.Any())
+            {
+                response.Items = order.OrderItems.OrderBy(item => item.Id)
+                    .Select(_orderItemService.ToOrderItemResponse).ToList();
+            }
             response.Id = order.Id;
             response.UserId = order.UserId;
             response.UserName = order.User?.Name ?? string.Empty;

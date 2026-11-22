@@ -1,26 +1,54 @@
-﻿using marketplace_AdIns_BE.Models;
+using System.ComponentModel.DataAnnotations;
+using marketplace_AdIns_BE.Models;
 using marketplace_AdIns_BE.Repositories;
 using marketplace_AdIns_BE.DTOs;
-/*using marketplace_AdIns_BE.Exceptions;
-*/
+
 namespace marketplace_AdIns_BE.Services
 {
     public class ReviewService : IReviewService
-
     {
         private readonly IRepository<Review> _reviewRepository;
+        private readonly IRepository<Order> _orderRepository;
         private readonly ILogger<ReviewService> _logger;
 
         public ReviewService(
             IRepository<Review> reviewRepository,
+            IRepository<Order> orderRepository,
             ILogger<ReviewService> logger)
         {
             _reviewRepository = reviewRepository;
+            _orderRepository = orderRepository;
             _logger = logger;
         }
 
         public async Task<ReviewResponse?> CreateAsync(ReviewRequest request)
         {
+            // Validasi relasi pesanan jika OrderId disertakan
+            if (request.OrderId.HasValue && request.OrderId.Value > 0)
+            {
+                var order = await _orderRepository.GetByIdAsync(request.OrderId.Value, "OrderItems");
+                if (order == null || order.UserId != request.UserId)
+                {
+                    throw new ValidationException("Pesanan tidak ditemukan atau bukan milik pengguna ini.");
+                }
+
+                if (order.Status != OrderStatus.DELIVERED)
+                {
+                    throw new ValidationException("Ulasan hanya dapat diberikan untuk pesanan yang telah selesai (DELIVERED).");
+                }
+
+                if (!order.OrderItems.Any(oi => oi.ProductId == request.ProductId))
+                {
+                    throw new ValidationException("Produk ini tidak terdapat dalam pesanan tersebut.");
+                }
+            }
+
+            // Validasi bahwa user hanya bisa memberikan ulasan 1 kali untuk produk ini
+            var existingReviews = await _reviewRepository.GetAllAsync();
+            if (existingReviews.Any(r => r.UserId == request.UserId && r.ProductId == request.ProductId))
+            {
+                throw new ValidationException("Ulasan untuk produk pada pesanan ini sudah pernah diberikan.");
+            }
 
             await _reviewRepository.BeginTransactionAsync();
             try
@@ -29,23 +57,22 @@ namespace marketplace_AdIns_BE.Services
                 {
                     ProductId = request.ProductId,
                     UserId = request.UserId,
-                    Rating = request.Rating ?? 0,
+                    Rating = request.Rating ?? 5,
                     comment = request.Comment ?? string.Empty,
                     Created_at = DateTime.UtcNow,
                     Updated_at = DateTime.UtcNow,
                 };
 
                 await _reviewRepository.AddAsync(review);
-
                 await _reviewRepository.SaveChangesAsync();
                 await _reviewRepository.CommitTransactionAsync();
 
-/*                _logger.LogInformation($"Produk Cart berhasil di: Cart {cart.Id}, User {cart.UserId}, Product {cart.ProductId}");
-*/                var created = await GetByIdAsync(review.Id);
+                var created = await GetByIdAsync(review.Id);
                 return created != null ? ToReviewResponse(created) : null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
+                await _reviewRepository.RollbackTransactionAsync();
                 throw;
             }
         }
@@ -53,19 +80,13 @@ namespace marketplace_AdIns_BE.Services
         public async Task<List<Review>> GetAllReviewByProductIdAsync(long productId)
         {
             var reviews = await _reviewRepository.GetAllAsync("User", "Product");
-            reviews = reviews.Where(r => r.ProductId == productId).ToList();
-
-            if (!reviews.Any()) return null;
-
-            return reviews;
-            throw new NotImplementedException();
+            var filtered = reviews.Where(r => r.ProductId == productId).ToList();
+            return filtered;
         }
 
         public async Task<Review?> GetByIdAsync(long reviewId)
         {
             var review = await _reviewRepository.GetByIdAsync(reviewId);
-            if (review == null) return null;
-
             return review;
         }
 

@@ -1,4 +1,4 @@
-﻿using marketplace_AdIns_BE.Models;
+using marketplace_AdIns_BE.Models;
 
 namespace marketplace_AdIns_BE.DTOs
 {
@@ -9,6 +9,7 @@ namespace marketplace_AdIns_BE.DTOs
         public string? UserName { get; set; }
         public long ProductId { get; set; }
         public string? ProductName { get; set; }
+        public long? OrderId { get; set; }
         public long Rating { get; set; }
 
         public string? Comment { get; set; }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using marketplace_AdIns_BE.DTOs;
 using marketplace_AdIns_BE.Services;
@@ -32,13 +33,25 @@ namespace marketplace_AdIns_BE.Controllers
 
             if (!long.TryParse(userIdClaim, out long userId))
             {
-                return Unauthorized("Invalid or missing user ID claim.");
+                return Unauthorized(new { status = "error", message = "Invalid or missing user ID claim." });
             }
+
+            request.ProductId = productId;
+            request.UserId = userId;
 
             try
             {
                 ReviewResponse? result = await _reviewService.CreateAsync(request);
-                return Created($"/api/{productId}/reviews/{result.Id}", result);
+                if (result == null)
+                {
+                    return BadRequest(new { status = "error", message = "Gagal membuat ulasan." });
+                }
+
+                return Created($"/api/products/{productId}/reviews/{result.Id}", result);
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { status = "error", message = ex.Message });
             }
             catch (Exception ex)
             {
