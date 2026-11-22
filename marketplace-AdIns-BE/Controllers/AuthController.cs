@@ -25,14 +25,22 @@ namespace marketplace_AdIns_BE.Controllers
             return Ok(result);
         }
 
-        /*[HttpPost("register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            RegisterResponse? result = await _authService.RegisAsync(request);
+            RegisterResponse? result = await _authService.RegisterAsync(request);
             if (result == null)
-                return BadRequest(new { status = "error", message = "Email sudah terdaftar atau role tidak valid." });
+            {
+                if (request.Role == "Buyer")
+                {
+                    return BadRequest(new { status = "error", message = "Email ini sudah terdaftar seabagai Buyer." });
+                } else if (request.Role == "Seller")
+                {
+                    return BadRequest(new { status = "error", message = "Email ini sudah terdaftar seabagai Seller." });
+                }
+            }
 
             return StatusCode(StatusCodes.Status201Created, result);
-        }*/
+        }
     }
 }
