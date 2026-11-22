@@ -484,10 +484,8 @@ namespace marketplace_AdIns_BE.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code")
+                    b.HasIndex("StoreId", "Code")
                         .IsUnique();
-
-                    b.HasIndex("StoreId");
 
                     b.ToTable("Vouchers");
                 });
