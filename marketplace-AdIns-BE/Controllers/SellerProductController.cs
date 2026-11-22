@@ -21,7 +21,8 @@ namespace marketplace_AdIns_BE.Controllers
             [FromQuery] string? search,
             [FromQuery] int page = 1,
             [FromQuery] int limit = 10,
-            [FromQuery] long categoryId = 0)
+            [FromQuery] long categoryId = 0,
+            [FromQuery] long? storeId = null)
         {
             var userIdClaim = User.FindFirst("userId")?.Value;
 
@@ -35,7 +36,12 @@ namespace marketplace_AdIns_BE.Controllers
                 return BadRequest(new { message = "Page atau limit tidak valid." });
             }
 
-            var products = await _productService.GetAllAsync(search, userId, categoryId, page, limit);
+            if (storeId is <= 0)
+            {
+                return BadRequest(new { message = "StoreId harus lebih dari 0." });
+            }
+
+            var products = await _productService.GetAllAsync(search, userId, categoryId, page, limit, storeId);
             return Ok(products);
         }
 
