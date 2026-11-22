@@ -11,6 +11,7 @@
         public string StoreName { get; set; } = string.Empty;
         public int Quantity { get; set; }
         public decimal TotalPrice { get; set; }
+        public decimal? CurrentTotalPrice { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }

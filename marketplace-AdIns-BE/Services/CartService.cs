@@ -113,6 +113,7 @@ namespace marketplace_AdIns_BE.Services
                 UserName = cart.User?.Name ?? string.Empty,
                 Quantity = cart.Quantity,
                 TotalPrice = cart.TotalPrice,
+                CurrentTotalPrice = cart.Product?.ProductPrice * cart.Quantity,
                 UpdatedAt = cart.UpdatedAt ?? DateTime.UtcNow,
                 CreatedAt = cart.CreatedAt ?? DateTime.UtcNow,
             };
