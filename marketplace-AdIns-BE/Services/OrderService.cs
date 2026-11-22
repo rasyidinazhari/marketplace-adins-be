@@ -226,7 +226,11 @@ namespace marketplace_AdIns_BE.Services
             var response = new OrderDetailResponse
             {
                 Items = order.OrderItems.OrderBy(item => item.Id)
-                    .Select(_orderItemService.ToOrderItemResponse).ToList()
+                    .Select(_orderItemService.ToOrderItemResponse).ToList(),
+                PhoneNumber = order.Address?.PhoneNumber ?? string.Empty,
+                FullAddress = order.Address?.Note,
+                City = order.Address?.City ?? string.Empty,
+                PostalCode = order.Address?.PostalCode ?? string.Empty
             };
             SetOrderFields(order, response);
             return response;
