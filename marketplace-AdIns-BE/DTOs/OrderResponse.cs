@@ -1,4 +1,4 @@
-﻿using marketplace_AdIns_BE.Models;
+using marketplace_AdIns_BE.Models;
 
 namespace marketplace_AdIns_BE.DTOs
 {
@@ -17,6 +17,7 @@ namespace marketplace_AdIns_BE.DTOs
         public decimal TotalBeforeDisc { get; set; }
         public decimal? TotalAfterDisc { get; set; }
         public OrderStatus OrderStatus { get; set; }
+        public List<OrderItemResponse> Items { get; set; } = new List<OrderItemResponse>();
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
