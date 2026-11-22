@@ -5,7 +5,7 @@ namespace marketplace_AdIns_BE.Services
     public interface IProductService
     {
         Task<Product?> GetByIdAsync(long productId, long? sellerId = null);
-        Task<List<Product>> GetAllAsync(string? search, long? sellerId, long? categoryId, int page, int limit);
+        Task<List<Product>> GetAllAsync(string? search, long? sellerId, long? categoryId, int page, int limit, long? storeId = null);
         Task<ProductResponse?> CreateAsync(long sellerId, ProductRequest request);
         Task<ProductResponse?> UpdateAsync(long productId, long sellerId, ProductRequest request);
         Task<bool> DeleteAsync(long productId, long sellerId);
