@@ -35,7 +35,7 @@ namespace marketplace_AdIns_BE.Data
                 .IsUnique();
 
             modelBuilder.Entity<Voucher>()
-                .HasIndex(u => u.Code)
+                .HasIndex(v => new { v.StoreId, v.Code })
                 .IsUnique();
 
             modelBuilder.Entity<Store>()

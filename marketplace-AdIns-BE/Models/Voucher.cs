@@ -9,7 +9,7 @@ namespace marketplace_AdIns_BE.Models
         public long Id { get; set; }
         public string Code { get; set; } = string.Empty;
         public long StoreId { get; set; }
-        public Store? Store { get; set; } = new();
+        public Store? Store { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(12,2)")]
