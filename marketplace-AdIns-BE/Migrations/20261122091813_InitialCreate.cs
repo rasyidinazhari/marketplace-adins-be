@@ -466,15 +466,10 @@ namespace marketplace_AdIns_BE.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vouchers_Code",
+                name: "IX_Vouchers_StoreId_Code",
                 table: "Vouchers",
-                column: "Code",
+                columns: new[] { "StoreId", "Code" },
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Vouchers_StoreId",
-                table: "Vouchers",
-                column: "StoreId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

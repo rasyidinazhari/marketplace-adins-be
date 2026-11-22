@@ -5,5 +5,6 @@ namespace marketplace_AdIns_BE.Services
     public interface IStoreService
     {
         Task<List<StoreResponse>> GetAllForSellerAsync(long sellerId);
+        Task<StoreResponse> CreateAsync(StoreRequest request);
     }
 }

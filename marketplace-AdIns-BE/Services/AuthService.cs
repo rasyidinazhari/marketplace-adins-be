@@ -112,6 +112,8 @@ namespace marketplace_AdIns_BE.Services
                     u.UserRoles.Any(ur => ur.Role != null &&
                                           ur.Role.RoleName.Equals(roleEntity.RoleName, StringComparison.OrdinalIgnoreCase)));
 
+                Console.WriteLine("userExisting ", userExisting);
+
                 if (userExisting != null)
                 {
                     await _userRepository.RollbackTransactionAsync();
