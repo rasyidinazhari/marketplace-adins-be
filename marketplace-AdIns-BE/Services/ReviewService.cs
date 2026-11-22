@@ -41,13 +41,22 @@ namespace marketplace_AdIns_BE.Services
                 {
                     throw new ValidationException("Produk ini tidak terdapat dalam pesanan tersebut.");
                 }
-            }
 
-            // Validasi bahwa user hanya bisa memberikan ulasan 1 kali untuk produk ini
-            var existingReviews = await _reviewRepository.GetAllAsync();
-            if (existingReviews.Any(r => r.UserId == request.UserId && r.ProductId == request.ProductId))
+                // Validasi bahwa pesanan ini belum pernah diulas untuk produk tersebut (1 ulasan per order)
+                var existingReviews = await _reviewRepository.GetAllAsync();
+                if (existingReviews.Any(r => r.OrderId == request.OrderId.Value && r.ProductId == request.ProductId))
+                {
+                    throw new ValidationException("Ulasan untuk produk pada pesanan ini sudah pernah diberikan.");
+                }
+            }
+            else
             {
-                throw new ValidationException("Ulasan untuk produk pada pesanan ini sudah pernah diberikan.");
+                // Fallback jika OrderId tidak disertakan (1 ulasan per user per produk)
+                var existingReviews = await _reviewRepository.GetAllAsync();
+                if (existingReviews.Any(r => r.UserId == request.UserId && r.ProductId == request.ProductId))
+                {
+                    throw new ValidationException("Ulasan untuk produk ini sudah pernah diberikan.");
+                }
             }
 
             await _reviewRepository.BeginTransactionAsync();
@@ -57,6 +66,7 @@ namespace marketplace_AdIns_BE.Services
                 {
                     ProductId = request.ProductId,
                     UserId = request.UserId,
+                    OrderId = request.OrderId,
                     Rating = request.Rating ?? 5,
                     comment = request.Comment ?? string.Empty,
                     Created_at = DateTime.UtcNow,
@@ -99,6 +109,7 @@ namespace marketplace_AdIns_BE.Services
                 ProductName = review.Product?.ProductName ?? string.Empty,
                 UserId = review.UserId,
                 UserName = review.User?.Name ?? string.Empty,
+                OrderId = review.OrderId,
                 Rating = review.Rating,
                 Comment = review.comment,
                 UpdatedAt = review.Updated_at ?? DateTime.UtcNow,

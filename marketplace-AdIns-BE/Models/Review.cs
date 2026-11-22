@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace marketplace_AdIns_BE.Models
@@ -14,6 +14,8 @@ namespace marketplace_AdIns_BE.Models
 
         public long ProductId { get; set; }
         public Product? Product { get; set; }
+
+        public long? OrderId { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(2,1)")]
