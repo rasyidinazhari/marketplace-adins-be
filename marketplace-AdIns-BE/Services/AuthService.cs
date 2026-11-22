@@ -41,14 +41,33 @@ namespace marketplace_AdIns_BE.Services
 
             if (user.Password != loginRequest.Password) return null;
 
-            // Create Payload
-            Claim[] claims = new Claim[]
+
+            Claim[] claims;
+            if (loginRequest.Role == "Seller")
             {
-                new Claim("userId", user.Id.ToString()),
-                new Claim("email", user.Email),
-                new Claim("name", user.Name),
-                new Claim(ClaimTypes.Role, loginRequest.Role)
-            };
+                // Create Payload Seller
+                claims = new Claim[]
+                {
+                    new Claim("userId", user.Id.ToString()),
+                    new Claim("email", user.Email),
+                    new Claim("name", user.Name),
+                    new Claim(ClaimTypes.Role, loginRequest.Role),
+                    new Claim("storeName", user?.Stores?.Select(s => s.StoreName).FirstOrDefault() ?? string.Empty),
+                };
+            }
+            else
+            {
+                // Create Payload Buyer
+                claims = new Claim[]
+                {
+                    new Claim("userId", user.Id.ToString()),
+                    new Claim("email", user.Email),
+                    new Claim("name", user.Name),
+                    new Claim(ClaimTypes.Role, loginRequest.Role)
+                };
+            }
+
+
 
             // Set Credential
             SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
@@ -67,18 +86,36 @@ namespace marketplace_AdIns_BE.Services
                 signingCredentials: creds
             );
 
-            return new LoginResponse
+            if (loginRequest.Role == "Seller")
             {
-                Status = "success",
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
-                User = new UserSummary
+                return new LoginResponse
                 {
-                    Id = user.Id,
-                    Name = user.Name,
-                    Email = user.Email,
-                    Role = loginRequest.Role,
-                }
-            };
+                    Status = "success",
+                    Token = new JwtSecurityTokenHandler().WriteToken(token),
+                    User = new UserSummary
+                    {
+                        Id = user.Id,
+                        Name = user.Name,
+                        Email = user.Email,
+                        Role = loginRequest.Role,
+                        StoreName = user?.Stores?.Select(s => s.StoreName).FirstOrDefault() ?? string.Empty
+                    }
+                };
+            } else
+            {
+                return new LoginResponse
+                {
+                    Status = "success",
+                    Token = new JwtSecurityTokenHandler().WriteToken(token),
+                    User = new UserSummary
+                    {
+                        Id = user.Id,
+                        Name = user.Name,
+                        Email = user.Email,
+                        Role = loginRequest.Role,
+                    }
+                };
+            }
         }
 
         public async Task<RegisterResponse?> RegisterAsync(RegisterRequest request)
@@ -125,7 +162,7 @@ namespace marketplace_AdIns_BE.Services
                 {
                     Name = request.Name.Trim(),
                     Email = normalizedEmail,
-                    Password = request.Password, 
+                    Password = request.Password,
                     isActive = true,
                     Created_at = DateTime.UtcNow,
                     Updated_at = DateTime.UtcNow
