@@ -20,6 +20,6 @@ namespace marketplace_AdIns_BE.DTOs
 
         [Required(ErrorMessage = "Role wajib diisi.")]
         [MaxLength(30, ErrorMessage = "Role maksimal 30 karakter.")]
-        public string Role { get; set; } = "Buyer"; // Dipetakan ke Role.RoleName melalui tabel UserRole
+        public string Role { get; set; } = string.Empty; // Dipetakan ke Role.RoleName melalui tabel UserRole
     }
 }
