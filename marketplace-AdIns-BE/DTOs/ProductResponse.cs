@@ -1,4 +1,4 @@
-﻿using marketplace_AdIns_BE.Models;
+using marketplace_AdIns_BE.Models;
 
 namespace marketplace_AdIns_BE.DTOs
 {
@@ -17,6 +17,10 @@ namespace marketplace_AdIns_BE.DTOs
         public decimal ProductPrice { get; set; }
 
         public int ProductStock { get; set; }
+
+        public double Rating { get; set; }
+        public long SalesCount { get; set; }
+        public int TotalReviews { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

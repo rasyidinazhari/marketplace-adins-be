@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using marketplace_AdIns_BE.DTOs;
 using marketplace_AdIns_BE.Services;
@@ -41,6 +41,7 @@ namespace marketplace_AdIns_BE.Controllers
                 return Unauthorized("Invalid or missing user ID claim.");
             }
 
+            request.UserId = userId;
             var cart = await _cartService.CreateAsync(request);
             return Ok(cart);
         }

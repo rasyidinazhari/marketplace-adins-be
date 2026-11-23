@@ -1,4 +1,4 @@
-﻿using marketplace_AdIns_BE.Models;
+using marketplace_AdIns_BE.Models;
 using marketplace_AdIns_BE.Repositories;
 using marketplace_AdIns_BE.DTOs;
 using Microsoft.EntityFrameworkCore;
@@ -85,7 +85,7 @@ namespace marketplace_AdIns_BE.Services
 
         public async Task<List<Product>?> GetAllAsync(string? search, long? sellerId, long? categoryId, int page, int limit)
         {
-            var products = await _productRepository.GetAllAsync("Store", "ProductCategories");
+            var products = await _productRepository.GetAllAsync("Store", "ProductCategories", "Reviews", "OrderItems");
 
             // For Seller
             if (sellerId != null)
@@ -127,15 +127,31 @@ namespace marketplace_AdIns_BE.Services
             
             if (!products.Any()) return new List<Product>();
 
-            return products.Skip((page - 1) * limit).Take(limit).ToList();
+            var pagedProducts = products.Skip((page - 1) * limit).Take(limit).ToList();
+            foreach (var p in pagedProducts)
+            {
+                p.Rating = p.Reviews != null && p.Reviews.Any()
+                    ? Math.Round(p.Reviews.Average(r => (double)r.Rating), 1)
+                    : 0;
+                p.TotalReviews = p.Reviews?.Count ?? 0;
+                p.SalesCount = p.OrderItems?.Sum(oi => oi.Quantity) ?? 0;
+            }
+
+            return pagedProducts;
         }
 
         public async Task<Product?> GetByIdAsync(long productId, long? sellerId = null)
         {
-            var product = await _productRepository.GetByIdAsync(productId, "ProductCategories.Category", "Store");
+            var product = await _productRepository.GetByIdAsync(productId, "ProductCategories.Category", "Store", "Reviews", "OrderItems");
 
             if (product == null || product.isActive != true) return null;
             if (sellerId.HasValue && product.Store?.UserId != sellerId.Value) return null;
+
+            product.Rating = product.Reviews != null && product.Reviews.Any()
+                ? Math.Round(product.Reviews.Average(r => (double)r.Rating), 1)
+                : 0;
+            product.TotalReviews = product.Reviews?.Count ?? 0;
+            product.SalesCount = product.OrderItems?.Sum(oi => oi.Quantity) ?? 0;
 
             return product;
         }
@@ -272,6 +288,9 @@ namespace marketplace_AdIns_BE.Services
                 ProductDescription = product.ProductDescription ?? string.Empty,
                 ProductPrice = product.ProductPrice ?? 0,
                 ProductStock = product.ProductStock ?? 0,
+                Rating = product.Rating,
+                SalesCount = product.SalesCount,
+                TotalReviews = product.TotalReviews,
                 UpdatedAt = product.UpdatedAt ?? DateTime.UtcNow,
                 CreatedAt = product.CreatedAt ?? DateTime.UtcNow,
             };
