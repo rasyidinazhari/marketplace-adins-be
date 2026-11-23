@@ -258,6 +258,7 @@ namespace marketplace_AdIns_BE.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     ProductId = table.Column<long>(type: "bigint", nullable: false),
+                    OrderId = table.Column<long>(type: "bigint", nullable: true),
                     Rating = table.Column<decimal>(type: "numeric(2,1)", nullable: false),
                     comment = table.Column<string>(type: "text", nullable: false),
                     Created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),

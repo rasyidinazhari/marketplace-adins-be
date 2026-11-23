@@ -1,10 +1,11 @@
+using marketplace_AdIns_BE.DTOs;
 using marketplace_AdIns_BE.Models;
 using marketplace_AdIns_BE.Repositories;
-using marketplace_AdIns_BE.DTOs;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using static System.Net.WebRequestMethods;
 
 namespace marketplace_AdIns_BE.Services
 {
@@ -14,6 +15,7 @@ namespace marketplace_AdIns_BE.Services
         private readonly IRepository<Store> _storeRepository;
         private readonly IRepository<Category> _categoryRepository;
         private readonly IRepository<ProductCategory> _productCategoryRepository;
+        private readonly IRepository<User> _userRepository;
         private readonly ILogger<ProductService> _logger;
 
         public ProductService(
@@ -21,12 +23,14 @@ namespace marketplace_AdIns_BE.Services
             IRepository<Store> storeRepository,
             IRepository<Category> categoryRepository,
             IRepository<ProductCategory> productCategoryRepository,
+            IRepository<User> userRepository,
             ILogger<ProductService> logger)
         {
             _productRepository = productRepository;
             _storeRepository = storeRepository;
             _categoryRepository = categoryRepository;
             _productCategoryRepository = productCategoryRepository;
+            _userRepository = userRepository;
             _logger = logger;
         }
         public async Task<ProductResponse?> CreateAsync(long sellerId, ProductRequest request)
@@ -86,6 +90,36 @@ namespace marketplace_AdIns_BE.Services
         public async Task<List<Product>> GetAllAsync(string? search, long? sellerId, long? categoryId, int page, int limit)
         {
             var products = await _productRepository.GetAllAsync("Store", "ProductCategories", "Reviews", "OrderItems");
+
+            List<User> listUsers = await _userRepository.GetAllAsync();
+            List<Product> listProducts = await _productRepository.GetAllAsync();
+            List<Store> listStores = await _storeRepository.GetAllAsync();
+
+            var dataFilter = (from lu in listUsers
+                         join ls in listStores on lu.Id equals ls.UserId
+                         join lp in listProducts on ls.Id equals lp.StoreId
+                         where lu.Id == 2
+                         orderby lp.ProductPrice ascending
+                         select new
+                         {
+                             lu.Id,
+                             lu.Name,
+                             ls.StoreName,
+                             lp.ProductName,
+                             lp.ProductPrice
+                         }).ToList();
+            if (!dataFilter.Any())
+            {
+                Console.WriteLine("Data Filter kosong");
+            }
+            else
+            {
+                Console.WriteLine($"Jumlah data: {dataFilter.Count()}");
+                foreach (var item in dataFilter)
+                {
+                    Console.WriteLine($"{item.Id} | {item.Name} | {item.StoreName} | {item.ProductName} | {item.ProductPrice}");
+                }
+            }
 
             // For Seller
             if (sellerId != null)

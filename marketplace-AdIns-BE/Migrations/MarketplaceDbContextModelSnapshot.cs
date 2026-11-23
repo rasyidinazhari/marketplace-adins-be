@@ -293,6 +293,9 @@ namespace marketplace_AdIns_BE.Migrations
                     b.Property<DateTime?>("Created_at")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<long?>("OrderId")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
