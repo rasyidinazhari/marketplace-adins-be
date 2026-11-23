@@ -83,7 +83,7 @@ namespace marketplace_AdIns_BE.Services
             }
         }
 
-        public async Task<List<Product>> GetAllAsync(string? search, long? sellerId, long? categoryId, int page, int limit, long? storeId = null)
+        public async Task<List<Product>> GetAllAsync(string? search, long? sellerId, long? categoryId, int page, int limit)
         {
             var products = await _productRepository.GetAllAsync("Store", "ProductCategories", "Reviews", "OrderItems");
 
@@ -92,11 +92,6 @@ namespace marketplace_AdIns_BE.Services
             {
                 // Filter by Seller
                 products = products.Where(p => p.Store != null && p.Store.UserId == sellerId && p.isActive == true).ToList();
-
-                if (storeId.HasValue)
-                {
-                    products = products.Where(p => p.StoreId == storeId.Value).ToList();
-                }
 
                 if (!string.IsNullOrEmpty(search))
                 {
