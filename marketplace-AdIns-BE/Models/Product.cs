@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace marketplace_AdIns_BE.Models
 {
@@ -27,10 +28,24 @@ namespace marketplace_AdIns_BE.Models
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
 
+        [NotMapped]
+        public double Rating { get; set; }
+
+        [NotMapped]
+        public long SalesCount { get; set; }
+
+        [NotMapped]
+        public int TotalReviews { get; set; }
+
+        [JsonIgnore]
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
+
+        [JsonIgnore]
         public ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
+        [JsonIgnore]
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+
         public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
     }
 }

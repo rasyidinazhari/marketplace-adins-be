@@ -1,4 +1,4 @@
-﻿using marketplace_AdIns_BE.Data;
+using marketplace_AdIns_BE.Data;
 using marketplace_AdIns_BE.Repositories;
 using marketplace_AdIns_BE.Services;
 using marketplace_AdIns_BE.Middlewares;
@@ -38,6 +38,7 @@ builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<ILandingService, LandingService>();
 
 
 builder.Services.AddControllers();
